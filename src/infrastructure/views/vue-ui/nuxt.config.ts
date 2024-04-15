@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     },
     alias: {
         '@domain': '../../../../domain',
+        '@infrastructure': '../../../../infrastructure',
     },
     quasar: {
         // Optional string | boolean
