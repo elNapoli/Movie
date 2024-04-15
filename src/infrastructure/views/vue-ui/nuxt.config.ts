@@ -1,7 +1,13 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     devtools: { enabled: true },
-    modules: ['nuxt-quasar-vite'],
+    modules: ['nuxt-quasar-vite', '@nuxtjs/supabase'],
+    supabase: {
+        redirect: false,
+    },
+    alias: {
+        '@domain': '../../../../domain',
+    },
     quasar: {
         // Optional string | boolean
         // Optional string[]

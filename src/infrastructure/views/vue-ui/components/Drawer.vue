@@ -1,9 +1,5 @@
 <template>
-    <q-drawer
-        :modelValue="open"
-        @update:modelValue="open = $event"
-        class="bg-grey-8"
-    >
+    <q-drawer :modelValue="open" class="bg-grey-8">
         <q-list dark>
             <q-item-label header>Essential Links</q-item-label>
             <q-item
