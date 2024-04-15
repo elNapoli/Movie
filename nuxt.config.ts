@@ -5,9 +5,10 @@ export default defineNuxtConfig({
     supabase: {
         redirect: false,
     },
+    srcDir: 'src/presenter',
     alias: {
-        '@domain': '../../../../domain',
-        '@infrastructure': '../../../../infrastructure',
+        '@domain': './src/domain',
+        '@data': './src/data',
     },
     quasar: {
         // Optional string | boolean

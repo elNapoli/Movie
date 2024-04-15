@@ -1,7 +1,7 @@
 import { TransactionRepository } from '../../../domain/repositories/TransactionRepository'
 import { Http } from '../../../domain/repositories/Http'
-import { httpSupabase } from '../../../infrastructure/instances/supabase/HttpSupabase'
-import { transactionRepositoryImpl } from '../../../infrastructure/repositories/transactionRepositoryImpl'
+import { httpSupabase } from '../../../data/instances/supabase/HttpSupabase'
+import { transactionRepositoryImpl } from '../../../data/repositories/transactionRepositoryImpl'
 
 const client: Http = httpSupabase
 

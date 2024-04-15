@@ -1,4 +1,4 @@
-import { Http } from '../../../domain/repositories/Http'
+import { Http } from '@domain/repositories/Http'
 import { transactionListMock } from '../../../mocks/transactions'
 // TODO: esto se debe cambiar por la API de supabase pero necesito  hacer una prueba
 export const httpSupabase: Http = {
