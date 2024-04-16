@@ -4,15 +4,13 @@
 
 <script setup lang="ts">
 const supabase = useSupabaseClient()
-import { Transaction } from '../../domain/models/transaction'
-import { transactionService } from '../../domain/services/TransactionService'
-import { transactionRepository } from '../../data/instances/supabase/transactionRepository'
-const transactions = ref([])
-
-onMounted(() => {
-    // Code to be executed after the component is mounted
-    transactionService(transactionRepository)
-        .getTransactions()
-        .then((response) => console.log(response))
+const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+        queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+        },
+    },
 })
 </script>

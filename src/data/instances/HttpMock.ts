@@ -1,5 +1,5 @@
-import { Http } from '../../domain/repositories/HttpMethods'
-import { productListMock } from '../../mocks/products'
+import { Http } from '@domain/repositories/HttpMethods'
+import { productListMock } from '@mocks/products'
 
 export const httpFake: Http = {
     get: async <T>(

@@ -5,10 +5,13 @@ export default defineNuxtConfig({
     supabase: {
         redirect: false,
     },
+    plugins: [`${__dirname}/src/presenter/plugins/useSupabaseClient`],
     srcDir: 'src/presenter',
     alias: {
-        '@domain': './src/domain',
-        '@data': './src/data',
+        '@domain': `${__dirname}/src/domain`,
+        '@data': `${__dirname}/src/data`,
+        '@mocks': `${__dirname}/src/mocks`,
+        '@presenter': `${__dirname}/src/presenter`,
     },
     quasar: {
         // Optional string | boolean

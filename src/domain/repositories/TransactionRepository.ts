@@ -1,4 +1,4 @@
-import { Transaction } from '../models/transaction'
+import { Transaction } from '@domain/models/transaction'
 
 export interface TransactionRepository {
     getTransactions: () => Promise<Transaction[]>

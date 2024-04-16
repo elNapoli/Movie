@@ -1,4 +1,4 @@
-import { TransactionRepository } from '../repositories/TransactionRepository'
+import { TransactionRepository } from '@domain/repositories/TransactionRepository'
 
 export const transactionService = (
     repository: TransactionRepository
