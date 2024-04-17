@@ -1,10 +1,29 @@
+import vuetify from 'vite-plugin-vuetify'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
     devtools: { enabled: true },
-    modules: ['nuxt-quasar-vite', '@nuxtjs/supabase'],
+    modules: [
+        '@nuxtjs/supabase',
+        'nuxt-icon',
+        '@nuxtjs/google-fonts',
+        async (options, nuxt) => {
+            nuxt.hooks.hook('vite:extendConfig', (config) => {
+                config.plugins ||= []
+                config.plugins.push(
+                    vuetify({
+                        styles: { configFile: 'assets/styles/settings.scss' },
+                    })
+                )
+            })
+        },
+    ],
     supabase: {
         redirect: false,
     },
+    css: ['vuetify/styles'],
+    vite: { ssr: { noExternal: ['vuetify'] } },
+    typescript: { shim: false },
+    build: { transpile: ['vuetify'] },
     plugins: [`${__dirname}/src/presenter/plugins/useSupabaseClient`],
     srcDir: 'src/presenter',
     alias: {
@@ -13,20 +32,20 @@ export default defineNuxtConfig({
         '@mocks': `${__dirname}/src/mocks`,
         '@presenter': `${__dirname}/src/presenter`,
     },
-    quasar: {
-        // Optional string | boolean
-        // Optional string[]
-        // If you use animations, add Quasar Extra CSS animation URL here.
-        // NOTE: This CSS files are inserted on module plugin template, NOT on `nuxt.config`.
-        css: ['@quasar/extras/material-icons/material-icons.css'],
-        // List of extra Quasar Plugins
-        // auto-instaled: [Platform, Body, Dark, Screen, History, Lang, IconSet]
-        // optional: [AddressbarColor, AppFullscreen, AppVisibility, BottomSheet, Dialog,
-        //            LoadingBar, Loading, Notify, LocalStorage, SessionStorage]
-        plugins: ['Dialog'],
-        /* Quasar UI config -- you'll notice in Quasar docs when you need it */
-        config: {
-            dark: false,
+    googleFonts: {
+        families: {
+            Roboto: true,
+            'Josefin+Sans': true,
+            Lato: [100, 300],
+            Raleway: {
+                wght: [100, 400],
+                ital: [100],
+            },
+            Inter: '200..700',
+            'Crimson Pro': {
+                wght: '200..900',
+                ital: '200..700',
+            },
         },
     },
 })

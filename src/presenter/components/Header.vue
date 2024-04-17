@@ -1,23 +1,16 @@
 <template>
-    <q-header elevated class="bg-grey-6">
-        <q-toolbar>
-            <q-btn
-                flat
-                dense
-                round
-                @click="handleButtonClick"
-                aria-label="Menu"
-                icon="menu"
-            />
+    <v-app-bar>
+        <v-app-bar-nav-icon @click="handleButtonClick"></v-app-bar-nav-icon>
 
-            <q-toolbar-title> Quasar App </q-toolbar-title>
-        </q-toolbar>
-    </q-header>
+        <v-app-bar-title>Super Lunes</v-app-bar-title>
+        <v-btn icon="mdi-login"> </v-btn>
+    </v-app-bar>
 </template>
 <script setup>
-const emit = defineEmits(['toggleDrawer'])
+const emit = defineEmits(['click'])
 
 const handleButtonClick = () => {
-    emit('toggleDrawer')
+    console.log('adsfasdf')
+    emit('click')
 }
 </script>

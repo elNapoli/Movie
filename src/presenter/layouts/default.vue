@@ -1,19 +1,13 @@
 <template>
-    <q-layout>
-        <Header @toggleDrawer="toggleLeftDrawer" />
-        <Drawer :open="drawerOpen" />
-        <q-page-container>
-            <q-page>
-                <slot />
-            </q-page>
-        </q-page-container>
-    </q-layout>
+    <v-app id="inspire">
+        <Drawer :open="drawer" />
+        <Header @click="drawer = !drawer" />
+        <v-main>
+            <slot />
+        </v-main>
+    </v-app>
 </template>
 
 <script setup>
-const drawerOpen = ref(false)
-
-const toggleLeftDrawer = () => {
-    drawerOpen.value = !drawerOpen.value
-}
+const drawer = ref(true)
 </script>
