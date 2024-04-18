@@ -4,8 +4,7 @@ export default defineNuxtConfig({
     devtools: { enabled: true },
     modules: [
         '@nuxtjs/supabase',
-        'nuxt-icon',
-        '@nuxtjs/google-fonts',
+        '@pinia/nuxt',
         async (options, nuxt) => {
             nuxt.hooks.hook('vite:extendConfig', (config) => {
                 config.plugins ||= []

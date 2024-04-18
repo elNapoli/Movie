@@ -11,9 +11,11 @@
     },
     "dependencies": {
         "@nuxtjs/supabase": "^1.2.0",
+        "@pinia/nuxt": "^0.5.1",
         "@quasar/extras": "^1.16.11",
         "nuxt": "^3.11.2",
         "nuxt-quasar-vite": "^1.0.13",
+        "pinia": "^2.1.7",
         "qalendar": "^3.8.1",
         "quasar": "^2.15.2",
         "vue": "^3.4.21",
@@ -21,8 +23,6 @@
     },
     "devDependencies": {
         "@mdi/font": "^7.4.47",
-        "@nuxtjs/google-fonts": "^3.2.0",
-        "nuxt-icon": "^0.6.10",
         "sass": "^1.75.0",
         "vite-plugin-vuetify": "^2.0.3",
         "vuetify-nuxt-module": "^0.13.2"
