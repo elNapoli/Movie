@@ -1,9 +1,11 @@
 <template>
     {{ pickedDate }}
-    <VueDatePicker v-model="date"></VueDatePicker>
     <NewEventDialog
         :open="openDialog"
         :date="pickedDate"
+        @updateDate="updateDate($event)"
+        @updateMinute="updateMinute($event)"
+        @updateHour="updateHour($event)"
         @handleClose="openDialog = false"
     />
     <Qalendar
@@ -52,8 +54,22 @@ const config = {
     defaultMode: 'month',
 }
 const createEvent = (date) => {
-    pickedDate.value = new Date(date)
+    updateDate(new Date(date))
     openDialog.value = true
+}
+
+const updateDate = (newDate) => {
+    pickedDate.value = newDate
+}
+const updateHour = (hour) => {
+    const newDate = new Date(pickedDate.value)
+    newDate.setHours(hour)
+    pickedDate.value = newDate
+}
+const updateMinute = (minute) => {
+    const newDate = new Date(pickedDate.value)
+    newDate.setMinutes(minute)
+    pickedDate.value = newDate
 }
 </script>
 

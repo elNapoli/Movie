@@ -1,10 +1,5 @@
 <template>
     <div class="pa-4">
-        <DatePickerDialog
-            :open="openDatePicker"
-            :date="date"
-            @pickedDate=";(openDatePicker = false), (date = $event)"
-        />
         <v-dialog
             :modelValue="open"
             @update:value="open = $event"
@@ -16,14 +11,13 @@
                 <v-card-text>
                     <v-form>
                         <v-col cols="12">
-                            <v-text-field
-                                label="Fecha"
-                                readonly
-                                append-inner-icon="mdi-calendar"
-                                :modelValue="date"
-                                @update:modelValue="date = $event"
-                                @update:focused="openDatePicker = true"
-                            ></v-text-field>
+                            <DatepickerTextField
+                                :open="openDatePicker"
+                                :initialDate="date"
+                                @updateDate="$emit('updateDate', $event)"
+                                @updateHour="$emit('updateHour', $event)"
+                                @updateMinute="$emit('updateMinute', $event)"
+                            />
                             <v-select
                                 label="Region"
                                 :items="[
@@ -53,7 +47,12 @@
 </template>
 <script setup>
 const openDatePicker = ref(false)
-const emit = defineEmits(['handleClose'])
+const emit = defineEmits([
+    'handleClose',
+    'updateDate',
+    'updateHour',
+    'updateMinute',
+])
 
 const props = defineProps({
     open: {
