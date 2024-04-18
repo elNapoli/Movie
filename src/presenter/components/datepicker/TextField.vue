@@ -18,14 +18,14 @@
                         >
                             <template #actions>
                                 <container
-                                    @click="dialog2 = true"
+                                    @click="timePickerDialog = true"
                                     class="text-center pa-1 text-h5 w-100"
                                     v-ripple
                                 >
                                     <v-icon
                                         icon="mdi-clock-outline"
                                         size="24"
-                                        @click="dialog2 = true"
+                                        @click="timePickerDialog = true"
                                     ></v-icon>
                                 </container>
                             </template>
@@ -48,7 +48,7 @@
         </v-dialog>
 
         <v-dialog
-            v-model="dialog2"
+            v-model="timePickerDialog"
             persistent
             max-width="240"
             max-height="900"
@@ -80,23 +80,9 @@
                         <v-icon
                             icon="mdi-calendar-outline"
                             size="24"
-                            @click="dialog2 = fals"
+                            @click="timePickerDialog = fals"
                         ></v-icon>
                     </container>
-                </v-card-actions>
-            </v-card>
-        </v-dialog>
-
-        <v-dialog v-model="dialog3" width="auto">
-            <v-card title="Dialog 3">
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-
-                    <v-btn
-                        text="Close"
-                        variant="text"
-                        @click="dialog3 = false"
-                    ></v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -114,8 +100,7 @@ const props = defineProps({
 
 const hora = ref(0)
 const datepickerOpen = ref(false)
-const dialog2 = ref(false)
-const dialog3 = ref(false)
+const timePickerDialog = ref(false)
 </script>
 <style>
 .number {
