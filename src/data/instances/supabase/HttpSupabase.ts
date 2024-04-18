@@ -1,6 +1,4 @@
 import { Http } from '@domain/repositories/Http'
-import { transactionListMock } from '../../../mocks/transactions'
-// TODO: esto se debe cambiar por la API de supabase pero necesito  hacer una prueba
 import useSupabasePlugin from '@presenter/plugins/useSupabaseClient'
 
 export const httpSupabase: Http = {
@@ -18,8 +16,8 @@ export const httpSupabase: Http = {
         params?: Record<string, any>,
         config?: any
     ) => {
-        const response = await transactionListMock
-        return response
+        //const response = await transactionListMock
+        //return response
     },
     put: async <T>(
         path: string,
