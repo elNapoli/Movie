@@ -1,6 +1,5 @@
-export default function useSupabasePlugin() {
+export default defineNuxtPlugin((app) => {
     const client = useSupabaseClient()
-    // Aquí puedes hacer cualquier configuración o lógica adicional utilizando el cliente de Supabase
 
     return { client }
-}
+})
