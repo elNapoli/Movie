@@ -9,3 +9,7 @@ export default function formatarFecha(d: Date) {
 
     return dformat
 }
+
+export function getSupabaseClient() {
+    return useSupabaseClient()
+}

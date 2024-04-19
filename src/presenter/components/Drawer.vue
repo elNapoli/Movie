@@ -23,10 +23,7 @@
 </template>
 
 <script setup>
-import { defineProps, ref, onMounted } from 'vue'
-import { Menu } from '@domain/models/menu'
-import { menuService } from '@domain/services/MenuService'
-import { menuRepository } from '@data/instances/supabase/menuRepository'
+import { menuRepository } from '@data/di/moduleRepository'
 
 const props = defineProps({
     open: {
@@ -34,11 +31,6 @@ const props = defineProps({
         required: true,
     },
 })
-
-const menus = ref([])
-onMounted(() => {
-    menuService(menuRepository)
-        .getMenus()
-        .then((response) => (menus.value = response))
-})
+const a = await menuRepository.getMenus()
+console.log(a)
 </script>

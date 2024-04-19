@@ -27,7 +27,6 @@ export default defineNuxtConfig({
     alias: {
         '@domain': `${__dirname}/src/domain`,
         '@data': `${__dirname}/src/data`,
-        '@mocks': `${__dirname}/src/mocks`,
         '@presenter': `${__dirname}/src/presenter`,
     },
 })
