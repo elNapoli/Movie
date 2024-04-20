@@ -1,5 +1,5 @@
 import type { MenuDto } from '../http/dto/MenuDto'
-import type { SupabaseService } from '../instances/supabase/HttpSupabase'
+import type { SupabaseService } from './SupabaseService'
 
 class MenuService {
     private client: SupabaseService

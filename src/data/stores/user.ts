@@ -1,9 +1,11 @@
+import { authRepository } from '../di/moduleRepository'
+
 export const useUserStore = defineStore('userStore', () => {
     const supabase = useSupabaseClient()
     const user = ref(null)
+    const repository = authRepository
     const initUser = async () => {
-        const { data } = await supabase.auth.getUser()
-        user.value = data.user
+        user.value = await repository.getUser()
     }
     initUser()
     const signIn = async () => {

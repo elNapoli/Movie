@@ -19,9 +19,9 @@ export default defineNuxtConfig({
     vite: { ssr: { noExternal: ['vuetify'] } },
     typescript: { shim: false },
     build: { transpile: ['vuetify'] },
-    plugins: [`${__dirname}/src/presenter/plugins/useSupabaseClient`],
+    plugins: [],
     pinia: {
-        storesDirs: [`${__dirname}/src/data/stores/**`],
+        storesDirs: [`${__dirname}/src/data/stores/`],
     },
     srcDir: 'src/presenter',
     alias: {
