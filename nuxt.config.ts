@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     build: { transpile: ['vuetify'] },
     plugins: [`${__dirname}/src/presenter/plugins/useSupabaseClient`],
     pinia: {
-        storesDirs: [`${__dirname}/src/presenter/store`],
+        storesDirs: [`${__dirname}/src/data/stores/**`],
     },
     srcDir: 'src/presenter',
     alias: {
