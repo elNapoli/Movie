@@ -1,5 +1,5 @@
 import { Menu } from '@domain/models/menu'
 
-export interface MenuRepository {
+export interface IMenuRepository {
     getMenus: () => Promise<Menu[]>
 }

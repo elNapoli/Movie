@@ -12,35 +12,21 @@
     </v-app-bar>
 </template>
 <script setup>
-const supabase = useSupabaseClient()
+const userStore = useUserStore()
+const { signIn, signOut, initUser } = userStore
+const { user } = storeToRefs(userStore)
 const emit = defineEmits(['click'])
-const { data } = await supabase.auth.getUser()
-const user = ref(data.user)
 const handleButtonClick = () => {
     emit('click')
 }
+onMounted(() => {
+    initUser()
+})
 const handleSessionClick = () => {
     if (user.value === null) {
         signIn()
     } else {
         signOut()
     }
-}
-
-const signIn = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-            queryParams: {
-                access_type: 'offline',
-                prompt: 'consent',
-            },
-        },
-    })
-}
-
-const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    user.value = null
 }
 </script>

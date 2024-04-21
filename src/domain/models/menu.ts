@@ -1,7 +1,3 @@
-export interface IMenu {
-    fetchMenu: () => Menu
-}
-
 export class Menu {
     id: string
     name: string

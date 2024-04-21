@@ -5,7 +5,7 @@
                 <v-list-subheader>Menu</v-list-subheader>
 
                 <v-list-item
-                    v-for="(item, i) in menus"
+                    v-for="(item, i) in menuList"
                     :key="i"
                     :to="item.route"
                     :value="item"
@@ -23,22 +23,12 @@
 </template>
 
 <script setup>
-import { defineProps, ref, onMounted } from 'vue'
-import { Menu } from '@domain/models/menu'
-import { menuService } from '@domain/services/MenuService'
-import { menuRepository } from '@data/instances/supabase/menuRepository'
+const settingStore = useSettingStore()
 
-const props = defineProps({
-    open: {
-        type: Boolean,
-        required: true,
-    },
-})
+const { menuList } = storeToRefs(settingStore)
+const { getMenu } = settingStore
 
-const menus = ref([])
 onMounted(() => {
-    menuService(menuRepository)
-        .getMenus()
-        .then((response) => (menus.value = response))
+    getMenu()
 })
 </script>
