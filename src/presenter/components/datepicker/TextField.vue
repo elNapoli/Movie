@@ -89,6 +89,9 @@
     </div>
 </template>
 <script setup>
+const settingStore = useSettingStore()
+const { getCountries, getMunicipalities, getRegions } = settingStore
+const { regionList } = storeToRefs(settingStore)
 const emit = defineEmits(['updateDate', 'updateHour', 'updateMinute'])
 const props = defineProps({
     placeholder: {
@@ -101,6 +104,9 @@ const props = defineProps({
 const hora = ref(0)
 const datepickerOpen = ref(false)
 const timePickerDialog = ref(false)
+onMounted(() => {
+    getRegions(1) // NOTE:: se deja con el pais 1, que es chile por default
+})
 </script>
 <style>
 .number {

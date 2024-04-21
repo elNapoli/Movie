@@ -1,10 +1,10 @@
 import { SupabaseService } from '../services/SupabaseService'
-import MenuService from '../services/MenuService'
+import EventService from '../services/EventService'
 import AuthService from '../services/AuthService'
 
 const supabaseService = new SupabaseService()
 
-const menuService = new MenuService(supabaseService)
+const eventService = new EventService(supabaseService)
 const authService = new AuthService(supabaseService)
 
-export { supabaseService, menuService, authService }
+export { supabaseService, eventService, authService }

@@ -20,14 +20,8 @@
                             />
                             <v-select
                                 label="Region"
-                                :items="[
-                                    'California',
-                                    'Colorado',
-                                    'Florida',
-                                    'Georgia',
-                                    'Texas',
-                                    'Wyoming',
-                                ]"
+                                :item-props="itemProps"
+                                :items="regionList"
                             ></v-select>
 
                             <v-text-field label="Dirección"></v-text-field>
@@ -46,6 +40,9 @@
     </div>
 </template>
 <script setup>
+const settingStore = useSettingStore()
+const { getCountries, getMunicipalities, getRegions } = settingStore
+const { regionList } = storeToRefs(settingStore)
 const openDatePicker = ref(false)
 const emit = defineEmits([
     'handleClose',
@@ -63,5 +60,12 @@ const props = defineProps({
         type: String,
         required: true,
     },
+})
+onMounted(() => {
+    getRegions(1) // TODO: se deja con el pais 1, que es chile por default
+})
+
+const itemProps = (item) => ({
+    title: item.name,
 })
 </script>
