@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     modules: [
         '@nuxtjs/supabase',
         '@pinia/nuxt',
-        async (options, nuxt) => {
+        async (_, nuxt) => {
             nuxt.hooks.hook('vite:extendConfig', (config) => {
                 config.plugins ||= []
                 config.plugins.push(vuetify({}))
@@ -21,7 +21,7 @@ export default defineNuxtConfig({
     build: { transpile: ['vuetify'] },
     plugins: [],
     pinia: {
-        storesDirs: [`${__dirname}/src/data/stores/`],
+        storesDirs: [`./src/data/stores/**`],
     },
     srcDir: 'src/presenter',
     alias: {

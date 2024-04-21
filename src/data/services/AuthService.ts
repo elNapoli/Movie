@@ -21,6 +21,24 @@ class Authservice {
         }
         return null
     }
+    async signIn(): Promise<UserDto | null> {
+        const { data, error } = await this.client
+            .getClient()
+            .auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    queryParams: {
+                        access_type: 'offline',
+                        prompt: 'consent',
+                    },
+                },
+            })
+        return data
+    }
+    async signOut(): Promise<null> {
+        const { error } = await this.client.getClient().auth.signOut()
+        return null
+    }
 }
 
 export default Authservice

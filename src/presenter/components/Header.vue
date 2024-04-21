@@ -13,12 +13,15 @@
 </template>
 <script setup>
 const userStore = useUserStore()
-const { signIn, signOut } = userStore
+const { signIn, signOut, initUser } = userStore
 const { user } = storeToRefs(userStore)
 const emit = defineEmits(['click'])
 const handleButtonClick = () => {
     emit('click')
 }
+onMounted(() => {
+    initUser()
+})
 const handleSessionClick = () => {
     if (user.value === null) {
         signIn()

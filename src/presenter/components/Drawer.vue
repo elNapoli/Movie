@@ -5,7 +5,7 @@
                 <v-list-subheader>Menu</v-list-subheader>
 
                 <v-list-item
-                    v-for="(item, i) in menus"
+                    v-for="(item, i) in menuList"
                     :key="i"
                     :to="item.route"
                     :value="item"
@@ -23,14 +23,12 @@
 </template>
 
 <script setup>
-import { menuRepository } from '@data/di/moduleRepository'
+const settingStore = useSettingStore()
 
-const props = defineProps({
-    open: {
-        type: Boolean,
-        required: true,
-    },
+const { menuList } = storeToRefs(settingStore)
+const { getMenu } = settingStore
+
+onMounted(() => {
+    getMenu()
 })
-const a = await menuRepository.getMenus()
-console.log(a)
 </script>

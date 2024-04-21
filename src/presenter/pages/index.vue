@@ -3,8 +3,4 @@
         {{ user }}
     </v-card>
 </template>
-<script setup>
-const userStore = useUserStore()
-const { signIn, signOut } = userStore
-const { user } = storeToRefs(userStore)
-</script>
+<script setup></script>

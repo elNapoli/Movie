@@ -10,6 +10,12 @@ class AuthRepository implements IAuthRepository {
     async getUser(): Promise<User> {
         return await this.service.getUser()
     }
+    async signIn(): Promise<User> {
+        return await this.service.signIn()
+    }
+    async signOut(): Promise<null> {
+        return await this.service.signOut()
+    }
 }
 
 export default AuthRepository
