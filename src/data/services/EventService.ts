@@ -5,6 +5,7 @@ import type { MunicipalityDto } from '../http/dto/MunicipalityDto'
 import type { RegionDto } from '../http/dto/RegionDto'
 import type { BaseResponseDto } from '../http/dto/BaseResponseDto'
 import type { SupabaseService } from './SupabaseService'
+import type { EventEntry } from '../http/entries/EventEntry'
 
 class EventService {
     private client: SupabaseService
@@ -47,7 +48,7 @@ class EventService {
             .select()
             .ilike('name', `%${query}%`)
     }
-    async createEvent(data): Promise<BaseResponseDto<Boolean>> {
+    async createEvent(data: EventEntry): Promise<BaseResponseDto<Boolean>> {
         return this.client.getClient().from('games').insert(data)
     }
 }

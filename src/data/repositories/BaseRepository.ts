@@ -19,13 +19,14 @@ class BaseRepository {
                     : 'Todo fue un éxito',
                 status: data.status,
                 error: data.error ? true : false,
-                data: data.data ? dataToTransform(data.data) : undefined,
+                data: data.data ? dataToTransform(data.data) : null,
             }
         } catch (error) {
             return {
                 message: 'Ocurrió un error al procesar la solicitud',
                 status: 500,
                 error: true,
+                data: null,
             }
         }
     }
