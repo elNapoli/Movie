@@ -25,24 +25,23 @@
                                 @updateHour="$emit('updateHour', $event)"
                                 @updateMinute="$emit('updateMinute', $event)"
                             />
+
                             <v-select
                                 label="Region"
-                                v-model="formState.currentRegion"
+                                v-model="formState.region"
                                 :item-props="itemProps"
                                 :items="regionState.data"
                             ></v-select>
 
                             <v-select
                                 label="Comuna"
-                                v-model="formState.currentMunicipality"
+                                v-model="formState.municipality"
                                 :item-props="itemProps"
-                                :items="
-                                    formState.currentRegion.municipalityList
-                                "
+                                :items="formState.region.municipalityList"
                             ></v-select>
                             <v-autocomplete
                                 :key="uniqueKey"
-                                v-model="formState.gamesToPlay"
+                                v-model="formState.games"
                                 :items="gameState.data"
                                 label="Juego(s)"
                                 :menu="menuDropdownListOpen"
@@ -69,9 +68,14 @@
                                     ></v-list-item>
                                 </template>
                             </v-autocomplete>
+                            <v-select
+                                label="Cuantos personas"
+                                v-model="formState.slots"
+                                :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
+                            ></v-select>
                             <v-text-field
                                 label="Dirección"
-                                v-model="formState.currentAddress"
+                                v-model="formState.address"
                             ></v-text-field>
                         </v-col>
                     </v-card-text>
@@ -91,18 +95,14 @@
 <script setup>
 import debounce from 'lodash.debounce'
 const settingStore = useSettingStore()
+const userStore = useUserStore()
 const { getRegions, searchGames, createEventInSupabase } = settingStore
 const { regionState, gameState } = storeToRefs(settingStore)
+const { user } = storeToRefs(userStore)
 const openDatePicker = ref(false)
 const menuDropdownListOpen = ref(false)
 const uniqueKey = ref(0)
-const currentMunicipality = ref(null)
-const formState = reactive({
-    currentAddress: '',
-    currentRegion: {},
-    gamesToPlay: null,
-    currentMunicipality: null,
-})
+
 const emit = defineEmits([
     'handleClose',
     'updateDate',
@@ -120,11 +120,20 @@ const props = defineProps({
         required: true,
     },
 })
+const formState = reactive({
+    address: '',
+    host_id: user.value ? user.value.id : null,
+    date: props.date,
+    slots: 1,
+    region: {},
+    games: null,
+    municipality: null,
+})
 const search = debounce(async (query) => {
     if (query.trim() !== '') {
         searchGames(query)
     }
-}, 500) // 300 es el tiempo de espera en milisegundos
+}, 500)
 onMounted(() => {
     getRegions(1) // NOTE: se deja con el pais 1, que es chile por default
 })
@@ -132,7 +141,12 @@ watch(gameState, () => {
     uniqueKey.value += 1
     menuDropdownListOpen.value = true
 })
-
+watch(
+    () => props.date,
+    (newValue, oldValue) => {
+        formState.date = newValue
+    }
+)
 const itemProps = (item) => ({
     title: item.name,
 })

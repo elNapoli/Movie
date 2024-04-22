@@ -21,6 +21,7 @@ class BaseRepository {
                 data: data.data ? dataToTransform(data.data) : null,
             }
         } catch (error) {
+            console.log(error)
             return {
                 message: 'Ocurrió un error al procesar la solicitud',
                 status: 500,

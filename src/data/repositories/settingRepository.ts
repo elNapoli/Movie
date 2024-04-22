@@ -80,16 +80,11 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                 )
         )
     }
-    async createEvent(dataEntry: any): Promise<BaseResponse<Boolean>> {
-        const data = await this.service.createEvent(dataEntry)
-        return {
-            message: data.error?.message
-                ? data.error?.message
-                : 'Todo fue un exito',
-            status: data.status,
-            error: data.error ? true : false,
-            data: true, // TODO: lo deje quemado por mientras, se debe modificar
-        }
+    async createEvent(dataEntry: any): Promise<BaseResponse<boolean>> {
+        return this.handleResponse(
+            this.service.createEvent(dataEntry),
+            () => true
+        )
     }
 }
 

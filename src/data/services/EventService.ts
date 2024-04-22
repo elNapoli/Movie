@@ -48,8 +48,28 @@ class EventService {
             .select()
             .ilike('name', `%${query}%`)
     }
-    async createEvent(data: EventEntry): Promise<BaseResponseDto<Boolean>> {
-        return this.client.getClient().from('games').insert(data)
+    async createEvent(data: EventEntry): Promise<BaseResponseDto<boolean>> {
+        const games = data.games
+        delete data.games
+        const response = await this.client
+            .getClient()
+            .from('schedules')
+            .insert(data)
+            .select('id')
+        if (response.error !== null) {
+            return response
+        }
+        const game_to_insert = games.map((g) => ({
+            game_id: g.id,
+            schedule_id: response.data!![0].id,
+        }))
+        console.log('response', response)
+        console.log('game to insert', game_to_insert)
+        return await this.client
+            .getClient()
+            .from('schedules_games')
+            .insert(game_to_insert)
+            .select('id')
     }
 }
 
