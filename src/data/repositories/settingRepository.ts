@@ -1,16 +1,16 @@
-import type { Menu } from '@domain/models/menu'
 import type { ISettingRepository } from '@domain/repositories/ISettingRepository'
-import type { Country } from '~~/src/domain/models/country'
-import type { Municipality } from '~~/src/domain/models/municipality'
-import type { Region } from '~~/src/domain/models/region'
+import type { Country } from '~~/src/domain/models/Country'
+import type { Municipality } from '~~/src/domain/models/Municipality'
+import type { Region } from '~~/src/domain/models/Region'
 import type { RegionDto } from '../http/dto/RegionDto'
 import type { MunicipalityDto } from '../http/dto/MunicipalityDto'
 import type { CountryDto } from '../http/dto/CountryDto'
 import type { MenuDto } from '../http/dto/MenuDto'
 import type { GameDto } from '../http/dto/GameDto'
-import type { Game } from '~~/src/domain/models/games'
-import type { BaseResponse } from '~~/src/domain/models/baseResponse'
+import type { Game } from '~~/src/domain/models/Games'
+import type { BaseResponse } from '~~/src/domain/models/BaseResponse'
 import BaseRepository from './BaseRepository'
+import type { Menu } from '~~/src/domain/models/Menu'
 
 class SettingRepository extends BaseRepository implements ISettingRepository {
     async getMenus(): Promise<BaseResponse<Menu[]>> {

@@ -1,4 +1,4 @@
-import type { User } from '../models/user'
+import type { User } from '../models/User'
 
 export interface IAuthRepository {
     getUser: () => Promise<User | null>

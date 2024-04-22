@@ -1,4 +1,4 @@
-import type { BaseResponse } from '~~/src/domain/models/baseResponse'
+import type { BaseResponse } from '~~/src/domain/models/BaseResponse'
 import type EventService from '../services/EventService'
 
 class BaseRepository {
@@ -12,7 +12,6 @@ class BaseRepository {
     ): Promise<BaseResponse<MODEL>> {
         try {
             const data = await promise
-            console.log('data aajajja', data)
             return {
                 message: data.error?.message
                     ? data.error?.message

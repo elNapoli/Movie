@@ -1,9 +1,9 @@
-import type { Menu } from '@domain/models/menu'
-import type { Country } from '../models/country'
-import type { Municipality } from '../models/municipality'
-import type { Region } from '../models/region'
-import type { Game } from '../models/games'
-import type { BaseResponse } from '../models/baseResponse'
+import type { Menu } from '@domain/models/Menu'
+import type { Country } from '../models/Country'
+import type { Municipality } from '../models/Municipality'
+import type { Region } from '../models/Region'
+import type { Game } from '../models/Games'
+import type { BaseResponse } from '../models/BaseResponse'
 
 export interface ISettingRepository {
     getMenus: () => Promise<BaseResponse<Menu[]>>

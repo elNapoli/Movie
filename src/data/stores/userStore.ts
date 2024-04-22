@@ -1,4 +1,4 @@
-import type { User } from '~~/src/domain/models/user'
+import type { User } from '~~/src/domain/models/User'
 import { authRepository } from '../di/moduleRepository'
 
 interface State {

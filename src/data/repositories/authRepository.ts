@@ -1,6 +1,6 @@
 import type { IAuthRepository } from '@domain/repositories/IAuthRepository'
 import type AuthService from '../services/AuthService'
-import type { User } from '~~/src/domain/models/user'
+import type { User } from '~~/src/domain/models/User'
 
 class AuthRepository implements IAuthRepository {
     private service: AuthService

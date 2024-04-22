@@ -1,4 +1,4 @@
-import { MunicipalityDto } from './MunicipalityDto'
+import type { MunicipalityDto } from './MunicipalityDto'
 export interface RegionDto {
     id: string
     name: string

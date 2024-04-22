@@ -128,7 +128,7 @@ const search = debounce(async (query) => {
 onMounted(() => {
     getRegions(1) // NOTE: se deja con el pais 1, que es chile por default
 })
-watch(gameState.data, () => {
+watch(gameState, () => {
     uniqueKey.value += 1
     menuDropdownListOpen.value = true
 })

@@ -1,8 +1,8 @@
-import type { Menu } from '~~/src/domain/models/menu'
+import type { Menu } from '~~/src/domain/models/Menu'
 import { settingRepository } from '../di/moduleRepository'
-import { Region } from '~~/src/domain/models/region'
-import type { Game } from '~~/src/domain/models/games'
-import type { BaseResponse } from '~~/src/domain/models/baseResponse'
+import { Region } from '~~/src/domain/models/Region'
+import type { Game } from '~~/src/domain/models/Games'
+import type { BaseResponse } from '~~/src/domain/models/BaseResponse'
 import { InitState, LoadingState } from './BaseStore'
 
 interface State {
