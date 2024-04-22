@@ -1,0 +1,34 @@
+import type { BaseResponse } from '~~/src/domain/models/baseResponse'
+import type EventService from '../services/EventService'
+
+class BaseRepository {
+    service: EventService
+    constructor(service: EventService) {
+        this.service = service
+    }
+    async handleResponse<DTO, MODEL>(
+        promise: Promise<any>,
+        dataToTransform: (data: DTO) => MODEL
+    ): Promise<BaseResponse<MODEL>> {
+        try {
+            const data = await promise
+            console.log('data aajajja', data)
+            return {
+                message: data.error?.message
+                    ? data.error?.message
+                    : 'Todo fue un éxito',
+                status: data.status,
+                error: data.error ? true : false,
+                data: data.data ? dataToTransform(data.data) : undefined,
+            }
+        } catch (error) {
+            return {
+                message: 'Ocurrió un error al procesar la solicitud',
+                status: 500,
+                error: true,
+            }
+        }
+    }
+}
+
+export default BaseRepository

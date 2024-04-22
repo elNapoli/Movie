@@ -29,9 +29,7 @@
                                 label="Region"
                                 v-model="formState.currentRegion"
                                 :item-props="itemProps"
-                                :items="
-                                    regionState.data ? regionState.data : null
-                                "
+                                :items="regionState.data"
                             ></v-select>
 
                             <v-select
@@ -45,12 +43,12 @@
                             <v-autocomplete
                                 :key="uniqueKey"
                                 v-model="formState.gamesToPlay"
-                                :items="gameList"
+                                :items="gameState.data"
                                 label="Juego(s)"
                                 :menu="menuDropdownListOpen"
                                 multiple
                                 @update:search="search($event)"
-                                :loading="loadingGames"
+                                :loading="gameState.status == 1000"
                                 closable-chips
                                 placeholder="Buscar juegos..."
                                 chips
@@ -63,8 +61,7 @@
                                     </v-chip>
                                 </template>
 
-                                <template v-slot:item="{ props, item }"
-                                    >
+                                <template v-slot:item="{ props, item }">
                                     <v-list-item
                                         v-bind="props"
                                         :subtitle="item.value.year_published"
@@ -95,7 +92,7 @@
 import debounce from 'lodash.debounce'
 const settingStore = useSettingStore()
 const { getRegions, searchGames, createEventInSupabase } = settingStore
-const { regionState, gameList, loadingGames } = storeToRefs(settingStore)
+const { regionState, gameState } = storeToRefs(settingStore)
 const openDatePicker = ref(false)
 const menuDropdownListOpen = ref(false)
 const uniqueKey = ref(0)
@@ -131,7 +128,7 @@ const search = debounce(async (query) => {
 onMounted(() => {
     getRegions(1) // NOTE: se deja con el pais 1, que es chile por default
 })
-watch(gameList, () => {
+watch(gameState.data, () => {
     uniqueKey.value += 1
     menuDropdownListOpen.value = true
 })

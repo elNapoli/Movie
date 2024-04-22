@@ -34,7 +34,9 @@ class EventService {
         return await this.client
             .getClient()
             .from('regions')
-            .select()
+            .select(
+                `id, created_at, name, municipalities(id, created_at, name)`
+            )
             .eq('country_id', country_id)
     }
 
