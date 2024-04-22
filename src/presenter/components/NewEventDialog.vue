@@ -7,9 +7,9 @@
             persistent
             transition="dialog-bottom-transition"
         >
-            <v-card prepend-icon="mdi-update" title="Agendar nueva junta">
-                <v-card-text>
-                    <v-form>
+            <v-form fast-fail @submit.prevent="createEvent">
+                <v-card prepend-icon="mdi-update" title="Agendar nueva junta">
+                    <v-card-text>
                         <v-col cols="12">
                             <DatepickerTextField
                                 :open="openDatePicker"
@@ -20,30 +20,89 @@
                             />
                             <v-select
                                 label="Region"
+                                v-model="formState.currentRegion"
+                                @update:modelValue="
+                                    getMunicipalities(
+                                        formState.currentRegion.id
+                                    )
+                                "
                                 :item-props="itemProps"
                                 :items="regionList"
                             ></v-select>
 
-                            <v-text-field label="Dirección"></v-text-field>
+                            <v-select
+                                label="Comuna"
+                                v-model="formState.currentMunicipality"
+                                :item-props="itemProps"
+                                :items="municipalityList"
+                            ></v-select>
+                            <v-autocomplete
+                                :key="uniqueKey"
+                                v-model="formState.gamesToPlay"
+                                :items="gameList"
+                                label="Juego(s)"
+                                :menu="menuDropdownListOpen"
+                                multiple
+                                @update:search="search($event)"
+                                :loading="loadingGames"
+                                closable-chips
+                                placeholder="Buscar juegos..."
+                                chips
+                            >
+                                <template v-slot:chip="{ props, item }">
+                                    <v-chip
+                                        v-bind="props"
+                                        :text="item.value.name"
+                                    >
+                                    </v-chip>
+                                </template>
+
+                                <template v-slot:item="{ props, item }"
+                                    >
+                                    <v-list-item
+                                        v-bind="props"
+                                        :subtitle="item.value.year_published"
+                                        :title="item.value.name"
+                                    ></v-list-item>
+                                </template>
+                            </v-autocomplete>
+                            <v-text-field
+                                label="Dirección"
+                                v-model="formState.currentAddress"
+                            ></v-text-field>
                         </v-col>
-                    </v-form>
-                </v-card-text>
-                <template v-slot:actions>
-                    <v-btn
-                        class="ms-auto"
-                        text="Cancelar"
-                        @click="$emit('handleClose')"
-                    ></v-btn>
-                </template>
-            </v-card>
+                    </v-card-text>
+                    <template v-slot:actions>
+                        <v-btn
+                            class="ms-auto"
+                            text="Cancelar"
+                            @click="$emit('handleClose')"
+                        ></v-btn>
+                        <v-btn text="Agendar" @click="createEvent"></v-btn>
+                    </template>
+                </v-card>
+            </v-form>
         </v-dialog>
     </div>
 </template>
 <script setup>
+import debounce from 'lodash.debounce'
+import { useField, useForm } from 'vee-validate'
 const settingStore = useSettingStore()
-const { getCountries, getMunicipalities, getRegions } = settingStore
-const { regionList } = storeToRefs(settingStore)
+const { getCountries, getMunicipalities, getRegions, searchGames } =
+    settingStore
+const { regionList, municipalityList, gameList, loadingGames } =
+    storeToRefs(settingStore)
 const openDatePicker = ref(false)
+const menuDropdownListOpen = ref(false)
+const uniqueKey = ref(0)
+const currentMunicipality = ref(null)
+const formState = reactive({
+    currentAddress: '',
+    currentRegion: null,
+    gamesToPlay: null,
+    currentMunicipality: null,
+})
 const emit = defineEmits([
     'handleClose',
     'updateDate',
@@ -61,11 +120,26 @@ const props = defineProps({
         required: true,
     },
 })
+const search = debounce(async (query) => {
+    if (query.trim() !== '') {
+        searchGames(query)
+    }
+}, 500) // 300 es el tiempo de espera en milisegundos
 onMounted(() => {
-    getRegions(1) // TODO: se deja con el pais 1, que es chile por default
+    getRegions(1) // NOTE: se deja con el pais 1, que es chile por default
+})
+watch(gameList, () => {
+    uniqueKey.value += 1
+    menuDropdownListOpen.value = true
 })
 
 const itemProps = (item) => ({
     title: item.name,
 })
+
+const createEvent = () => {
+    console.log(
+        'vamos a crear neustro primeroam oadfoajsdfo imeroam oadfoajsdfo '
+    )
+}
 </script>

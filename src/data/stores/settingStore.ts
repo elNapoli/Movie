@@ -3,12 +3,15 @@ import { settingRepository } from '../di/moduleRepository'
 import type { Country } from '~~/src/domain/models/country'
 import type { Region } from '~~/src/domain/models/region'
 import type { Municipality } from '~~/src/domain/models/municipality'
+import type { Game } from '~~/src/domain/models/games'
 
 interface State {
     menuList: Menu[]
     regionList: Region[]
     municipalityList: Municipality[]
     countryList: Country[]
+    gameList: Game[]
+    loadingGames: Boolean
 }
 
 export const useSettingStore = defineStore('settingStore', {
@@ -18,6 +21,8 @@ export const useSettingStore = defineStore('settingStore', {
             countryList: [],
             regionList: [],
             municipalityList: [],
+            gameList: [],
+            loadingGames: false,
         }
     },
     getters: {},
@@ -34,6 +39,11 @@ export const useSettingStore = defineStore('settingStore', {
         },
         async getRegions(country_id: string) {
             this.regionList = await settingRepository.getRegions(country_id)
+        },
+        async searchGames(query: string) {
+            this.loadingGames = true
+            this.gameList = await settingRepository.searchGames(query)
+            this.loadingGames = false
         },
     },
 })

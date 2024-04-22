@@ -8,6 +8,8 @@ import type { RegionDto } from '../http/dto/RegionDto'
 import type { MunicipalityDto } from '../http/dto/MunicipalityDto'
 import type { CountryDto } from '../http/dto/CountryDto'
 import type { MenuDto } from '../http/dto/MenuDto'
+import type { GameDto } from '../http/dto/GameDto'
+import type { Game } from '~~/src/domain/models/games'
 
 class SettingRepository implements ISettingRepository {
     private service: EventService
@@ -37,7 +39,7 @@ class SettingRepository implements ISettingRepository {
     }
     async getMunicipalities(region_id: string): Promise<Municipality[]> {
         const data = await this.service.getMunicipalities(region_id)
-        return data.map(
+        return data.data.map(
             (dto: MunicipalityDto): Municipality => ({
                 id: dto.id,
                 name: dto.name,
@@ -52,6 +54,16 @@ class SettingRepository implements ISettingRepository {
                 id: dto.id,
                 name: dto.name,
                 country_id: dto.country_id,
+            })
+        )
+    }
+    async searchGames(query: string): Promise<Game[]> {
+        const data = await this.service.searchGames(query)
+        return data.data.map(
+            (dto: GameDto): Game => ({
+                id: dto.id,
+                name: dto.name,
+                year_published: dto.year_published,
             })
         )
     }

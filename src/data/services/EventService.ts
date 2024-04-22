@@ -1,4 +1,5 @@
 import type { CountryDto } from '../http/dto/CountryDto'
+import type { GameDto } from '../http/dto/GameDto'
 import type { MenuDto } from '../http/dto/MenuDto'
 import type { MunicipalityDto } from '../http/dto/MunicipalityDto'
 import type { RegionDto } from '../http/dto/RegionDto'
@@ -25,12 +26,19 @@ class EventService {
             .eq('region_id', region_id)
     }
     async getRegions(country_id: string): Promise<RegionDto[]> {
-        console.log(country_id)
         return this.client
             .getClient()
             .from('regions')
             .select()
             .eq('country_id', country_id)
+    }
+
+    async searchGames(query: string): Promise<GameDto[]> {
+        return this.client
+            .getClient()
+            .from('games')
+            .select()
+            .ilike('name', `%${query}%`)
     }
 }
 
