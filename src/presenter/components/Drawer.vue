@@ -5,7 +5,8 @@
                 <v-list-subheader>Menu</v-list-subheader>
 
                 <v-list-item
-                    v-for="(item, i) in menuList"
+                    v-if="menuState !== null"
+                    v-for="(item, i) in menuState.data"
                     :key="i"
                     :to="item.route"
                     :value="item"
@@ -25,7 +26,7 @@
 <script setup>
 const settingStore = useSettingStore()
 
-const { menuList } = storeToRefs(settingStore)
+const { menuState } = storeToRefs(settingStore)
 const { getMenu } = settingStore
 
 onMounted(() => {

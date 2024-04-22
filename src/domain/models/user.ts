@@ -1,6 +1,3 @@
-export class User {
+export interface User {
     id: string
-    constructor(id: string) {
-        this.id = id
-    }
 }

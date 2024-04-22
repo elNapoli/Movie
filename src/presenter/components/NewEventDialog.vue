@@ -11,6 +11,13 @@
                 <v-card prepend-icon="mdi-update" title="Agendar nueva junta">
                     <v-card-text>
                         <v-col cols="12">
+                            <v-alert
+                                class="mb-5"
+                                text="Errores al buscar datos"
+                                v-show="regionState.error"
+                                title="Error!"
+                                type="error"
+                            ></v-alert>
                             <DatepickerTextField
                                 :open="openDatePicker"
                                 :initialDate="date"
@@ -21,20 +28,19 @@
                             <v-select
                                 label="Region"
                                 v-model="formState.currentRegion"
-                                @update:modelValue="
-                                    getMunicipalities(
-                                        formState.currentRegion.id
-                                    )
-                                "
                                 :item-props="itemProps"
-                                :items="regionList"
+                                :items="
+                                    regionState.data ? regionState.data : null
+                                "
                             ></v-select>
 
                             <v-select
                                 label="Comuna"
                                 v-model="formState.currentMunicipality"
                                 :item-props="itemProps"
-                                :items="municipalityList"
+                                :items="
+                                    formState.currentRegion.municipalityList
+                                "
                             ></v-select>
                             <v-autocomplete
                                 :key="uniqueKey"
@@ -87,19 +93,16 @@
 </template>
 <script setup>
 import debounce from 'lodash.debounce'
-import { useField, useForm } from 'vee-validate'
 const settingStore = useSettingStore()
-const { getCountries, getMunicipalities, getRegions, searchGames } =
-    settingStore
-const { regionList, municipalityList, gameList, loadingGames } =
-    storeToRefs(settingStore)
+const { getRegions, searchGames, createEventInSupabase } = settingStore
+const { regionState, gameList, loadingGames } = storeToRefs(settingStore)
 const openDatePicker = ref(false)
 const menuDropdownListOpen = ref(false)
 const uniqueKey = ref(0)
 const currentMunicipality = ref(null)
 const formState = reactive({
     currentAddress: '',
-    currentRegion: null,
+    currentRegion: {},
     gamesToPlay: null,
     currentMunicipality: null,
 })
@@ -138,8 +141,6 @@ const itemProps = (item) => ({
 })
 
 const createEvent = () => {
-    console.log(
-        'vamos a crear neustro primeroam oadfoajsdfo imeroam oadfoajsdfo '
-    )
+    createEventInSupabase(toRaw(formState))
 }
 </script>
