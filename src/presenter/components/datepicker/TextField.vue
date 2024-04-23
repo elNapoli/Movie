@@ -2,7 +2,7 @@
     <div>
         <v-text-field
             :label="placeholder"
-            :modelValue="formattedDate(initialDate)"
+            :modelValue="$dayjs(initialDate).format('DD-MM-YYYY HH:mm')"
             @update:modelValue="value = $event"
             append-inner-icon="mdi-calendar"
             @update:focused="datepickerOpen = true"
@@ -35,7 +35,7 @@
 
                 <v-card-actions>
                     <span class="ml-7 text-subtitle-1">
-                        {{ formattedDate(initialDate) }}
+                        {{ $dayjs(initialDate).format('DD-MM-YYYY HH:mm') }}
                     </span>
                     <v-spacer></v-spacer>
                     <v-btn

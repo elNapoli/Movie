@@ -11,6 +11,8 @@ import type { Game } from '~~/src/domain/models/Games'
 import type { BaseResponse } from '~~/src/domain/models/BaseResponse'
 import BaseRepository from './BaseRepository'
 import type { Menu } from '~~/src/domain/models/Menu'
+import type { Event } from '~~/src/domain/models/Event'
+import type { EventDto } from '../http/dto/EventDto'
 
 class SettingRepository extends BaseRepository implements ISettingRepository {
     async getMenus(): Promise<BaseResponse<Menu[]>> {
@@ -84,6 +86,29 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
         return this.handleResponse(
             this.service.createEvent(dataEntry),
             () => true
+        )
+    }
+    async getEvents(): Promise<BaseResponse<Event[]>> {
+        const dayjs = useDayjs()
+        return this.handleResponse(
+            this.service.getEvents(),
+            (dataResponse: EventDto[]): Event[] =>
+                dataResponse.map(
+                    (dto: EventDto): Event => ({
+                        id: dto.id,
+                        time: {
+                            start: dayjs(dto.date_start).format(
+                                'YYYY-MM-DD HH:mm'
+                            ),
+                            end: dayjs(dto.date_end).format('YYYY-MM-DD HH:mm'),
+                        },
+                        color: 'green',
+                        isEditable: true,
+                        with: dto.host_id,
+                        description: dto.address,
+                        title: dto.address,
+                    })
+                )
         )
     }
 }

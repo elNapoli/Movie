@@ -6,6 +6,7 @@ import type { RegionDto } from '../http/dto/RegionDto'
 import type { BaseResponseDto } from '../http/dto/BaseResponseDto'
 import type { SupabaseService } from './SupabaseService'
 import type { EventEntry } from '../http/entries/EventEntry'
+import type { EventDto } from '../http/dto/EventDto'
 
 class EventService {
     private client: SupabaseService
@@ -48,13 +49,24 @@ class EventService {
             .select()
             .ilike('name', `%${query}%`)
     }
+    async getEvents(): Promise<BaseResponseDto<EventDto[]>> {
+        const data = await this.client
+            .getClient()
+            .from('schedules')
+            .select(
+                '*, users(id, email), municipalities(id,name), games(id, name)'
+            )
+        return data
+    }
     async createEvent(data: EventEntry): Promise<BaseResponseDto<boolean>> {
         const games = data.games
         delete data.games
+        const user = await this.client.getClient().auth.getUser()
+        const new_data = { ...data, host_id: user.data.user!!.id }
         const response = await this.client
             .getClient()
             .from('schedules')
-            .insert(data)
+            .insert(new_data)
             .select('id')
         if (response.error !== null) {
             return response
@@ -63,8 +75,6 @@ class EventService {
             game_id: g.id,
             schedule_id: response.data!![0].id,
         }))
-        console.log('response', response)
-        console.log('game to insert', game_to_insert)
         return await this.client
             .getClient()
             .from('schedules_games')

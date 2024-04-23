@@ -20,6 +20,7 @@ export const useSettingStore = defineStore('settingStore', {
             regionState: InitState<Region[]>(),
             gameState: InitState<Game[]>(),
             createEventState: InitState<Boolean>(),
+            eventState: InitState<Event[]>(),
         }
     },
     getters: {},
@@ -27,13 +28,16 @@ export const useSettingStore = defineStore('settingStore', {
         async getMenu() {
             this.menuState = await settingRepository.getMenus()
         },
+        async getEvents() {
+            this.eventState = await settingRepository.getEvents()
+        },
 
         async getRegions(country_id: string) {
             this.regionState = await settingRepository.getRegions(country_id)
         },
         async createEventInSupabase(form: any) {
             const data: EventEntry = {
-                date: '2024-04-23 15:10:10+00', // TODO: ver que pasa con la fecha del front  por que da error en supabase
+                date: form.date,
                 slots: form.slots,
                 host_id: form.host_id,
                 municipality_id: form.municipality.id,

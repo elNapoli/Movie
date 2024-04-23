@@ -9,7 +9,7 @@
         @handleClose="openDialog = false"
     />
     <Qalendar
-        :events="events"
+        :events="eventState.data"
         :config="config"
         @edit-event="console.log('Editar evento', $event)"
         @delete-event="console.log('Eliminar evengo')"
@@ -20,39 +20,19 @@
 
 <script setup>
 import { Qalendar } from 'qalendar'
-
+const settingStore = useSettingStore()
+const { getEvents } = settingStore
+const { eventState } = storeToRefs(settingStore)
 const openDialog = ref(false)
 const pickedDate = ref('')
-const events = [
-    // ...
-    {
-        title: 'Advanced algebra',
-        with: 'Chandler Bing',
-        time: {
-            start: '2024-04-16 12:05',
-            end: '2024-04-17 13:35',
-        },
-        color: 'green',
-        isEditable: true,
-        id: '753944708f0f',
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores assumenda corporis doloremque et expedita molestias necessitatibus quam quas temporibus veritatis. Deserunt excepturi illum nobis perferendis praesentium repudiandae saepe sapiente voluptatem!',
-    },
-    {
-        title: 'Ralph on holiday',
-        with: 'Rachel Greene',
-        time: { start: '2022-05-10', end: '2022-05-22' },
-        color: 'green',
-        isEditable: true,
-        id: '5602b6f589fc',
-    },
-    // ...
-]
 const config = {
     locale: 'es-ES',
     showCurrentTime: true,
     defaultMode: 'month',
 }
+onMounted(() => {
+    getEvents()
+})
 const createEvent = (date) => {
     updateDate(new Date(date))
     openDialog.value = true
