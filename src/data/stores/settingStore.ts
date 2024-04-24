@@ -46,6 +46,7 @@ export const useSettingStore = defineStore('settingStore', {
                 municipality_id: form.municipality.id,
                 address: form.address,
                 games: form.games,
+                description: form.description,
             }
             this.createEventState = await settingRepository.createEvent(data)
         },

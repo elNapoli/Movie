@@ -4,7 +4,7 @@
         <v-dialog
             :modelValue="open"
             @update:value="open = $event"
-            max-width="600"
+            max-width="800"
             persistent
             transition="dialog-bottom-transition"
         >
@@ -79,6 +79,10 @@
                                 :item-props="itemProps"
                                 :items="formState.region.municipalityList"
                             ></v-select>
+                            <v-text-field
+                                label="Dirección"
+                                v-model="formState.address"
+                            ></v-text-field>
                             <v-autocomplete
                                 :key="uniqueKey"
                                 v-model="formState.games"
@@ -113,10 +117,11 @@
                                 v-model="formState.slots"
                                 :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
                             ></v-select>
-                            <v-text-field
-                                label="Dirección"
-                                v-model="formState.address"
-                            ></v-text-field>
+
+                            <Editor
+                                :value="formState.description"
+                                @input="formState.description = $event"
+                            />
                         </v-col>
                     </v-card-text>
                     <template v-slot:actions>
@@ -171,6 +176,27 @@ const formState = reactive({
     date_end: props.date_end,
     slots: 1,
     region: {},
+    description: `
+        <h2>
+          ¡Hola a todos!,
+        </h2>
+        <p>
+            Están cordialmente invitados a un evento, donde la diversión y la buena comida se mezclan con risas y juegos.
+        </p>
+        <p>
+            Traigan sus comidas favoritas para compartir mientras disfrutamos de una tarde emocionante con los siguientes juegos de mesa:
+        </p>
+        <ul>
+          <li>
+            Juego 1
+          </li>
+          <li>
+            Juego 2
+          </li>
+        </ul>
+        <p>
+       Esperamos contar con su presencia para disfrutar juntos de una tarde llena de diversión y buenos momentos.
+        </p>`,
     games: null,
     municipality: null,
 })

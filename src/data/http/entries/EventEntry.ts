@@ -8,4 +8,5 @@ export interface EventEntry {
     municipality_id: number
     address: string
     games: Game[]
+    description: string
 }
