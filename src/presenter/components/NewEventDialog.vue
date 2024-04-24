@@ -1,5 +1,6 @@
 <template>
     <div class="pa-4">
+        <LoaderFullScreen :isLoading="createEventState.status == 1000" />
         <v-dialog
             :modelValue="open"
             @update:value="open = $event"
@@ -13,17 +14,56 @@
                         <v-col cols="12">
                             <v-alert
                                 class="mb-5"
-                                text="Errores al buscar datos"
-                                v-show="regionState.error"
+                                text="Hubo un error en el sistema...."
+                                v-show="
+                                    regionState.error || createEventState.error
+                                "
                                 title="Error!"
                                 type="error"
                             ></v-alert>
                             <DatepickerTextField
                                 :open="openDatePicker"
-                                :initialDate="date"
-                                @updateDate="$emit('updateDate', $event)"
-                                @updateHour="$emit('updateHour', $event)"
-                                @updateMinute="$emit('updateMinute', $event)"
+                                :initialDate="date_start"
+                                @updateDate="
+                                    $emit('updateDate', {
+                                        type: 'start',
+                                        date: $event,
+                                    })
+                                "
+                                @updateHour="
+                                    $emit('updateHour', {
+                                        type: 'start',
+                                        hour: $event,
+                                    })
+                                "
+                                @updateMinute="
+                                    $emit('updateMinute', {
+                                        type: 'start',
+                                        minute: $event,
+                                    })
+                                "
+                            />
+                            <DatepickerTextField
+                                :open="openDatePicker"
+                                :initialDate="date_end"
+                                @updateDate="
+                                    $emit('updateDate', {
+                                        type: 'end',
+                                        date: $event,
+                                    })
+                                "
+                                @updateHour="
+                                    $emit('updateHour', {
+                                        type: 'end',
+                                        hour: $event,
+                                    })
+                                "
+                                @updateMinute="
+                                    $emit('updateMinute', {
+                                        type: 'end',
+                                        minute: $event,
+                                    })
+                                "
                             />
 
                             <v-select
@@ -96,8 +136,9 @@
 import debounce from 'lodash.debounce'
 const settingStore = useSettingStore()
 const userStore = useUserStore()
-const { getRegions, searchGames, createEventInSupabase } = settingStore
-const { regionState, gameState } = storeToRefs(settingStore)
+const { getRegions, searchGames, createEventInSupabase, getEvents } =
+    settingStore
+const { regionState, gameState, createEventState } = storeToRefs(settingStore)
 const { user } = storeToRefs(userStore)
 const openDatePicker = ref(false)
 const menuDropdownListOpen = ref(false)
@@ -115,15 +156,19 @@ const props = defineProps({
         type: Boolean,
         required: true,
     },
-    date: {
+    date_start: {
+        type: String,
+        required: true,
+    },
+    date_end: {
         type: String,
         required: true,
     },
 })
 const formState = reactive({
     address: '',
-    host_id: user.value ? user.value.id : null,
-    date: props.date,
+    date_start: props.date_start,
+    date_end: props.date_end,
     slots: 1,
     region: {},
     games: null,
@@ -142,11 +187,31 @@ watch(gameState, () => {
     menuDropdownListOpen.value = true
 })
 watch(
-    () => props.date,
+    () => props.date_end,
     (newValue, oldValue) => {
-        formState.date = newValue
+        formState.date_end = newValue
     }
 )
+
+watch(
+    () => props.date_start,
+    (newValue, oldValue) => {
+        formState.date_start = newValue
+    }
+)
+
+watch(createEventState, async (newEvent, oldEvent) => {
+    if (newEvent.status == 201) {
+        formState.address = ''
+        formState.slots = 1
+        formState.region = {}
+        formState.games = null
+        formState.municipality = null
+        menuDropdownListOpen.value = false
+        getEvents()
+        emit('handleClose')
+    }
+})
 const itemProps = (item) => ({
     title: item.name,
 })

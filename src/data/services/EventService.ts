@@ -54,19 +54,17 @@ class EventService {
             .getClient()
             .from('schedules')
             .select(
-                '*, users(id, email), municipalities(id,name), games(id, name)'
+                '*, users(id, email), municipalities(id,name, regions(id, name)), games(id, name,year_published)'
             )
         return data
     }
     async createEvent(data: EventEntry): Promise<BaseResponseDto<boolean>> {
         const games = data.games
         delete data.games
-        const user = await this.client.getClient().auth.getUser()
-        const new_data = { ...data, host_id: user.data.user!!.id }
         const response = await this.client
             .getClient()
             .from('schedules')
-            .insert(new_data)
+            .insert(data)
             .select('id')
         if (response.error !== null) {
             return response

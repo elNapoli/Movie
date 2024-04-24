@@ -2,7 +2,7 @@
     <div>
         <v-text-field
             :label="placeholder"
-            :modelValue="$dayjs(initialDate).format('DD-MM-YYYY HH:mm')"
+            :modelValue="initialDate.format('DD-MM-YYYY HH:mm')"
             @update:modelValue="value = $event"
             append-inner-icon="mdi-calendar"
             @update:focused="datepickerOpen = true"
@@ -12,7 +12,7 @@
                 <template v-slot:text>
                     <v-row justify="space-around">
                         <v-date-picker
-                            :modelValue="initialDate"
+                            :modelValue="initialDate.toDate()"
                             width="400"
                             @update:modelValue="$emit('updateDate', $event)"
                         >
@@ -35,7 +35,7 @@
 
                 <v-card-actions>
                     <span class="ml-7 text-subtitle-1">
-                        {{ $dayjs(initialDate).format('DD-MM-YYYY HH:mm') }}
+                        {{ initialDate.format('DD-MM-YYYY HH:mm') }}
                     </span>
                     <v-spacer></v-spacer>
                     <v-btn
@@ -58,12 +58,12 @@
                 <template v-slot:text>
                     <v-row>
                         <DatepickerNumber
-                            :initialNumber="initialDate.getHours()"
+                            :initialNumber="initialDate.hour()"
                             @onChange="$emit('updateHour', $event)"
                         />
 
                         <DatepickerNumber
-                            :initialNumber="initialDate.getMinutes()"
+                            :initialNumber="initialDate.minute()"
                             :delta="15"
                             @onChange="$emit('updateMinute', $event)"
                         />

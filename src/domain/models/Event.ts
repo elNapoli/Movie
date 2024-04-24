@@ -11,4 +11,8 @@ export interface Event {
     isEditable: boolean
     with: string
     description: string
+    address: string
+    games: Game[]
+    municipality: string
+    region: string
 }

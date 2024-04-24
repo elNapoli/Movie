@@ -1,6 +1,7 @@
 import type { Menu } from '~~/src/domain/models/Menu'
 import { settingRepository } from '../di/moduleRepository'
 import { Region } from '~~/src/domain/models/Region'
+import type { Event } from '~~/src/domain/models/Event'
 import type { Game } from '~~/src/domain/models/Games'
 import type { BaseResponse } from '~~/src/domain/models/BaseResponse'
 import { InitState, LoadingState } from './BaseStore'
@@ -36,8 +37,10 @@ export const useSettingStore = defineStore('settingStore', {
             this.regionState = await settingRepository.getRegions(country_id)
         },
         async createEventInSupabase(form: any) {
+            this.createEventState = LoadingState()
             const data: EventEntry = {
-                date: form.date,
+                date_start: form.date_start,
+                date_end: form.date_end,
                 slots: form.slots,
                 host_id: form.host_id,
                 municipality_id: form.municipality.id,
