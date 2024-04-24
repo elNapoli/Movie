@@ -14,4 +14,5 @@ export interface EventDto {
     municipalities: MunicipalityDto
     public: boolean
     users: UserDto
+    description: string
 }

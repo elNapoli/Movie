@@ -105,9 +105,9 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                         color: 'green',
                         isEditable: true,
                         with: dto.users.email,
-                        description: dto.address,
-                        title: dto.address,
-                        address: dto.address,
+                        description: dto.description,
+                        title: `Junta de ${dto.users.email}`,
+                        location: `${dto.municipalities.regions!!.name} ${dto.municipalities.name} ${dto.address}`,
                         games: dto.games.map(
                             (game: GameDto): Game => ({
                                 id: game.id,
@@ -115,8 +115,6 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                                 year_published: game.year_published,
                             })
                         ),
-                        municipality: dto.municipalities.name,
-                        region: dto.municipalities.regions!!.name,
                     })
                 )
         )
