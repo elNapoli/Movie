@@ -124,7 +124,6 @@ export default {
 
     watch: {
         value(value) {
-            console.log('adfjoasdjfoasjdfo')
             const isSame = this.editor.getHTML() === value
             if (isSame) {
                 return

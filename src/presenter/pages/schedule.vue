@@ -1,17 +1,14 @@
 <template>
     <NewEventDialog
         :open="openDialog"
-        :date_start="date_start"
-        :date_end="date_end"
-        @updateDate="updateDate($event)"
         @updateMinute="updateMinute($event)"
         @updateHour="updateHour($event)"
-        @handleClose="openDialog = false"
+        @handleClose="closeDialog()"
     />
     <Qalendar
         :events="eventState.data"
         :config="config"
-        @edit-event="console.log('Editar evento', $event)"
+        @edit-event="editEvent($event)"
         @delete-event="console.log('Eliminar evengo', $event)"
         @date-was-clicked="createEvent($event)"
         @datetime-was-clicked="createEvent($event)"
@@ -22,7 +19,8 @@
 import { Qalendar } from 'qalendar'
 const dayJs = useDayjs()
 const settingStore = useSettingStore()
-const { getEvents } = settingStore
+const { getEvents, setCurrentEvent, updateEventDates, clearCurrentEvent } =
+    settingStore
 const { eventState, createEventState } = storeToRefs(settingStore)
 const openDialog = ref(false)
 const date_start = ref('')
@@ -35,11 +33,21 @@ const config = {
 onMounted(() => {
     getEvents()
 })
+const editEvent = (id) => {
+    setCurrentEvent(id)
+    openDialog.value = true
+}
+const closeDialog = () => {
+    openDialog.value = false
+    clearCurrentEvent()
+    getEvents()
+}
 const createEvent = (date) => {
     const new_date = dayJs(date)
 
     date_start.value = new_date
     date_end.value = new_date.add(3, 'hour')
+    updateEventDates(new_date, new_date.add(3, 'hour'))
     openDialog.value = true
 }
 watch(
@@ -51,21 +59,6 @@ watch(
     }
 )
 
-const updateDate = (data) => {
-    const type = data.type
-    const date = dayJs(data.date)
-    if (type === 'start') {
-        date_start.value = date
-        if (date_start.value.diff(date_end.value) > 0) {
-            date_end.value = date_start.value
-        }
-    } else if (type === 'end') {
-        date_end.value = date
-        if (date_start.value.diff(date_end.value) < 0) {
-            date_start.value = date_end.value
-        }
-    }
-}
 const updateHour = (data) => {
     const type = data.type
     const hour = data.hour

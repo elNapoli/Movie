@@ -15,5 +15,6 @@ export interface ISettingRepository {
     getRegions: (country_id: string) => Promise<BaseResponse<Region[]>>
     searchGames: (query: string) => Promise<BaseResponse<Game[]>>
     createEvent: (dataEntry: any) => Promise<BaseResponse<boolean>>
+    updateEvent: (dataEntry: any, id: string) => Promise<BaseResponse<boolean>>
     getEvents: () => Promise<BaseResponse<Event[]>>
 }

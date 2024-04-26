@@ -54,10 +54,64 @@ class EventService {
             .getClient()
             .from('schedules')
             .select(
-                '*, users(id, email), municipalities(id,name, regions(id, name)), games(id, name,year_published)'
+                '*, users(id, email), municipalities(id,name, regions(id, name, municipalities(id,name))), games(id, name,year_published)'
             )
         return data
     }
+    async getGamesBeforeUpdate(schedule_id: string): Promise<number[]> {
+        const { data, error } = await this.client
+            .getClient()
+            .from('schedules_games')
+            .select('game_id')
+            .eq('schedule_id', schedule_id)
+
+        if (error) {
+            throw error
+        }
+
+        return data.map((row) => row.game_id)
+    }
+    async deleteGames(schedule_id: string, games_id: number[]): Promise<any> {
+        const { error } = await this.client
+            .getClient()
+            .from('schedules_games')
+            .delete()
+            .eq('schedule_id', schedule_id)
+            .in('game_id', games_id)
+
+        if (error) {
+            throw error
+        }
+    }
+    async addGames(schedule_id: string, games: GameDto[]) {
+        const new_games = games.map((g) => ({
+            event_id: schedule_id,
+            game_id: g.id,
+        }))
+
+        const { error } = await this.client
+            .getClient()
+            .from('schedules_games')
+            .insert(new_games)
+
+        if (error) {
+            throw error
+        }
+    }
+
+    async addGamesIntoSchedule(schedule_id: string, games: GameDto[]) {
+        const games_before_update = await getGamesBeforeUpdate(schedule_id)
+        const games_to_delete = games_before_update.filter(
+            (g) => !games.includes(g)
+        )
+        const games_to_add = games.filter(
+            (g) => !games_before_update.includes(g)
+        )
+
+        await this.deleteGames(schedule_id, games_to_delete)
+        await this.addGames(schedule_id, games_to_add)
+    }
+
     async createEvent(data: EventEntry): Promise<BaseResponseDto<boolean>> {
         const games = data.games
         delete data.games
@@ -78,6 +132,39 @@ class EventService {
             .from('schedules_games')
             .insert(game_to_insert)
             .select('id')
+    }
+    async updateEvent(
+        data: EventEntry,
+        id: string
+    ): Promise<BaseResponseDto<boolean>> {
+        const games = data.games
+        delete data.games
+        console.log('data desde service', data)
+        const response = await this.client
+            .getClient()
+            .from('schedules')
+            .update(data)
+            .eq('id', id)
+            .select('id')
+        if (response.error !== null) {
+            return response
+        }
+        await this.client
+            .getClient()
+            .from('schedules_games')
+            .delete()
+            .match({ schedule_id: id })
+        const game_to_insert = games.map((g) => ({
+            game_id: g.id,
+            schedule_id: id,
+        }))
+        const schedule_games_reponse = await this.client
+            .getClient()
+            .from('schedules_games')
+            .insert(game_to_insert)
+            .select('id')
+        console.log(schedule_games_reponse)
+        return schedule_games_reponse
     }
 }
 

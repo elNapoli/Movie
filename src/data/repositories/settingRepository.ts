@@ -82,6 +82,16 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                 )
         )
     }
+    async updateEvent(
+        dataEntry: any,
+        id: string
+    ): Promise<BaseResponse<boolean>> {
+        return this.handleResponse(
+            this.service.updateEvent(dataEntry, id),
+            () => true
+        )
+    }
+
     async createEvent(dataEntry: any): Promise<BaseResponse<boolean>> {
         return this.handleResponse(
             this.service.createEvent(dataEntry),
@@ -103,6 +113,10 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                             end: dayjs(dto.date_end).format('YYYY-MM-DD HH:mm'),
                         },
                         color: 'green',
+                        region: dto.municipalities.regions,
+                        municipality: dto.municipalities,
+                        address: dto.address,
+                        slots: dto.slots,
                         isEditable: true,
                         with: dto.users.email,
                         description: dto.description,

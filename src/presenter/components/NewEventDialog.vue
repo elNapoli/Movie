@@ -8,7 +8,7 @@
             persistent
             transition="dialog-bottom-transition"
         >
-            <v-form fast-fail @submit.prevent="createEvent">
+            <v-form fast-fail @submit.prevent="createOrUpdateEvent">
                 <v-card prepend-icon="mdi-update" title="Agendar nueva junta">
                     <v-card-text>
                         <v-col cols="12">
@@ -22,44 +22,48 @@
                                 type="error"
                             ></v-alert>
                             <DatepickerTextField
+                                v-if="currentEvent.time.start !== null"
+                                placeholder="Fecha de inicio"
                                 :open="openDatePicker"
-                                :initialDate="date_start"
+                                :initialDate="currentEvent.time.start"
                                 @updateDate="
-                                    $emit('updateDate', {
+                                    updateDate({
                                         type: 'start',
                                         date: $event,
                                     })
                                 "
                                 @updateHour="
-                                    $emit('updateHour', {
+                                    updateHour({
                                         type: 'start',
                                         hour: $event,
                                     })
                                 "
                                 @updateMinute="
-                                    $emit('updateMinute', {
+                                    updateMinute({
                                         type: 'start',
                                         minute: $event,
                                     })
                                 "
                             />
                             <DatepickerTextField
+                                v-if="currentEvent.time.start !== null"
+                                placeholder="Fecha de termino"
                                 :open="openDatePicker"
-                                :initialDate="date_end"
+                                :initialDate="currentEvent.time.end"
                                 @updateDate="
-                                    $emit('updateDate', {
+                                    updateDate({
                                         type: 'end',
                                         date: $event,
                                     })
                                 "
                                 @updateHour="
-                                    $emit('updateHour', {
+                                    updateHour({
                                         type: 'end',
                                         hour: $event,
                                     })
                                 "
                                 @updateMinute="
-                                    $emit('updateMinute', {
+                                    updateMinute({
                                         type: 'end',
                                         minute: $event,
                                     })
@@ -68,24 +72,24 @@
 
                             <v-select
                                 label="Region"
-                                v-model="formState.region"
+                                v-model="currentEvent.region"
                                 :item-props="itemProps"
                                 :items="regionState.data"
                             ></v-select>
 
                             <v-select
                                 label="Comuna"
-                                v-model="formState.municipality"
+                                v-model="currentEvent.municipality"
                                 :item-props="itemProps"
-                                :items="formState.region.municipalityList"
+                                :items="currentEvent.region?.municipalityList"
                             ></v-select>
                             <v-text-field
                                 label="Dirección"
-                                v-model="formState.address"
+                                v-model="currentEvent.address"
                             ></v-text-field>
                             <v-autocomplete
                                 :key="uniqueKey"
-                                v-model="formState.games"
+                                v-model="currentEvent.games"
                                 :items="gameState.data"
                                 label="Juego(s)"
                                 :menu="menuDropdownListOpen"
@@ -114,13 +118,13 @@
                             </v-autocomplete>
                             <v-select
                                 label="Cuantos personas"
-                                v-model="formState.slots"
+                                v-model="currentEvent.slots"
                                 :items="[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]"
                             ></v-select>
 
                             <Editor
-                                :value="formState.description"
-                                @input="formState.description = $event"
+                                :value="currentEvent.description"
+                                @onUpdate="currentEvent.description = $event"
                             />
                         </v-col>
                     </v-card-text>
@@ -130,7 +134,12 @@
                             text="Cancelar"
                             @click="$emit('handleClose')"
                         ></v-btn>
-                        <v-btn text="Agendar" @click="createEvent"></v-btn>
+                        <v-btn
+                            :text="
+                                currentEvent.id !== null ? 'Editar' : 'Agendar'
+                            "
+                            @click="createOrUpdateEvent"
+                        ></v-btn>
                     </template>
                 </v-card>
             </v-form>
@@ -141,9 +150,18 @@
 import debounce from 'lodash.debounce'
 const settingStore = useSettingStore()
 const userStore = useUserStore()
-const { getRegions, searchGames, createEventInSupabase, getEvents } =
-    settingStore
-const { regionState, gameState, createEventState } = storeToRefs(settingStore)
+const {
+    getRegions,
+    searchGames,
+    createOrUpdateEvent,
+    getEvents,
+    clearCurrentEvent,
+    updateDate,
+    updateHour,
+    updateMinute,
+} = settingStore
+const { regionState, gameState, createEventState, currentEvent } =
+    storeToRefs(settingStore)
 const { user } = storeToRefs(userStore)
 const openDatePicker = ref(false)
 const menuDropdownListOpen = ref(false)
@@ -161,44 +179,6 @@ const props = defineProps({
         type: Boolean,
         required: true,
     },
-    date_start: {
-        type: String,
-        required: true,
-    },
-    date_end: {
-        type: String,
-        required: true,
-    },
-})
-const formState = reactive({
-    address: '',
-    date_start: props.date_start,
-    date_end: props.date_end,
-    slots: 1,
-    region: {},
-    description: `
-        <h2>
-          ¡Hola a todos!,
-        </h2>
-        <p>
-            Están cordialmente invitados a un evento, donde la diversión y la buena comida se mezclan con risas y juegos.
-        </p>
-        <p>
-            Traigan sus comidas favoritas para compartir mientras disfrutamos de una tarde emocionante con los siguientes juegos de mesa:
-        </p>
-        <ul>
-          <li>
-            Juego 1
-          </li>
-          <li>
-            Juego 2
-          </li>
-        </ul>
-        <p>
-       Esperamos contar con su presencia para disfrutar juntos de una tarde llena de diversión y buenos momentos.
-        </p>`,
-    games: null,
-    municipality: null,
 })
 const search = debounce(async (query) => {
     if (query.trim() !== '') {
@@ -212,37 +192,14 @@ watch(gameState, () => {
     uniqueKey.value += 1
     menuDropdownListOpen.value = true
 })
-watch(
-    () => props.date_end,
-    (newValue, oldValue) => {
-        formState.date_end = newValue
-    }
-)
-
-watch(
-    () => props.date_start,
-    (newValue, oldValue) => {
-        formState.date_start = newValue
-    }
-)
 
 watch(createEventState, async (newEvent, oldEvent) => {
     if (newEvent.status == 201) {
-        formState.address = ''
-        formState.slots = 1
-        formState.region = {}
-        formState.games = null
-        formState.municipality = null
-        menuDropdownListOpen.value = false
-        getEvents()
         emit('handleClose')
+        clearCurrentEvent()
     }
 })
 const itemProps = (item) => ({
     title: item.name,
 })
-
-const createEvent = () => {
-    createEventInSupabase(toRaw(formState))
-}
 </script>
