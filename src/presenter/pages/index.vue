@@ -1,6 +1,8 @@
 <template>
-    <v-card class="mx-auto" max-width="300">
-        {{ user }}
-    </v-card>
+    {{ editor }}
+    <Editor :value="editor" @input="editor = $event" />
 </template>
-<script setup></script>
+
+<script setup>
+const editor = ref('adf')
+</script>

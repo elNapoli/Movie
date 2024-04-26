@@ -1,8 +1,8 @@
-import MenuRepository from '../repositories/menuRepository'
+import SettingRepository from '../repositories/settingRepository'
 import AuthRepository from '../repositories/authRepository'
-import { authService, menuService } from './moduleService'
+import { authService, eventService } from './moduleService'
 
-const menuRepository = new MenuRepository(menuService)
+const settingRepository = new SettingRepository(eventService)
 const authRepository = new AuthRepository(authService)
 
-export { menuRepository, authRepository }
+export { settingRepository, authRepository }

@@ -2,7 +2,7 @@
     <div>
         <v-text-field
             :label="placeholder"
-            :modelValue="formattedDate(initialDate)"
+            :modelValue="initialDate.format('DD-MM-YYYY HH:mm')"
             @update:modelValue="value = $event"
             append-inner-icon="mdi-calendar"
             @update:focused="datepickerOpen = true"
@@ -12,7 +12,7 @@
                 <template v-slot:text>
                     <v-row justify="space-around">
                         <v-date-picker
-                            :modelValue="initialDate"
+                            :modelValue="initialDate.toDate()"
                             width="400"
                             @update:modelValue="$emit('updateDate', $event)"
                         >
@@ -35,7 +35,7 @@
 
                 <v-card-actions>
                     <span class="ml-7 text-subtitle-1">
-                        {{ formattedDate(initialDate) }}
+                        {{ initialDate.format('DD-MM-YYYY HH:mm') }}
                     </span>
                     <v-spacer></v-spacer>
                     <v-btn
@@ -58,12 +58,12 @@
                 <template v-slot:text>
                     <v-row>
                         <DatepickerNumber
-                            :initialNumber="initialDate.getHours()"
+                            :initialNumber="initialDate.hour()"
                             @onChange="$emit('updateHour', $event)"
                         />
 
                         <DatepickerNumber
-                            :initialNumber="initialDate.getMinutes()"
+                            :initialNumber="initialDate.minute()"
                             :delta="15"
                             @onChange="$emit('updateMinute', $event)"
                         />
@@ -89,6 +89,9 @@
     </div>
 </template>
 <script setup>
+const settingStore = useSettingStore()
+const { getCountries, getMunicipalities, getRegions } = settingStore
+const { regionList } = storeToRefs(settingStore)
 const emit = defineEmits(['updateDate', 'updateHour', 'updateMinute'])
 const props = defineProps({
     placeholder: {
@@ -101,6 +104,9 @@ const props = defineProps({
 const hora = ref(0)
 const datepickerOpen = ref(false)
 const timePickerDialog = ref(false)
+onMounted(() => {
+    getRegions(1) // NOTE:: se deja con el pais 1, que es chile por default
+})
 </script>
 <style>
 .number {

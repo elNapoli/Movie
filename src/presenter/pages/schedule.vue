@@ -1,18 +1,31 @@
 <template>
-    {{ pickedDate }}
+    <LoaderFullScreen :isLoading="deleteEventState.status == 1000" />
+    <v-dialog v-model="open_dialog_delete" max-width="600">
+        <v-card
+            prepend-icon="mdi-map-marker"
+            text="Si eliminas esta junta no se podrá recuperar"
+            title="¿Seguro que deseas eliminar esta junta?"
+        >
+            <template v-slot:actions>
+                <v-spacer></v-spacer>
+
+                <v-btn @click="open_dialog_delete = false"> Cancelar </v-btn>
+
+                <v-btn @click="confirmDelete"> Eliminar</v-btn>
+            </template>
+        </v-card>
+    </v-dialog>
     <NewEventDialog
         :open="openDialog"
-        :date="pickedDate"
-        @updateDate="updateDate($event)"
         @updateMinute="updateMinute($event)"
         @updateHour="updateHour($event)"
-        @handleClose="openDialog = false"
+        @handleClose="closeDialog()"
     />
     <Qalendar
-        :events="events"
+        :events="eventState.data"
         :config="config"
-        @edit-event="console.log('Editar evento', $event)"
-        @delete-event="console.log('Eliminar evengo')"
+        @edit-event="editEvent($event)"
+        @delete-event="deleteEvent($event)"
         @date-was-clicked="createEvent($event)"
         @datetime-was-clicked="createEvent($event)"
     />
@@ -20,56 +33,85 @@
 
 <script setup>
 import { Qalendar } from 'qalendar'
-
+const dayJs = useDayjs()
+const settingStore = useSettingStore()
+const {
+    getEvents,
+    setCurrentEvent,
+    updateEventDates,
+    clearCurrentEvent,
+    deleteCurrentEvent,
+} = settingStore
+const { eventState, createEventState, deleteEventState } =
+    storeToRefs(settingStore)
 const openDialog = ref(false)
-const pickedDate = ref('')
-const events = [
-    // ...
-    {
-        title: 'Advanced algebra',
-        with: 'Chandler Bing',
-        time: {
-            start: '2024-04-16 12:05',
-            end: '2024-04-17 13:35',
-        },
-        color: 'green',
-        isEditable: true,
-        id: '753944708f0f',
-        description:
-            'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores assumenda corporis doloremque et expedita molestias necessitatibus quam quas temporibus veritatis. Deserunt excepturi illum nobis perferendis praesentium repudiandae saepe sapiente voluptatem!',
-    },
-    {
-        title: 'Ralph on holiday',
-        with: 'Rachel Greene',
-        time: { start: '2022-05-10', end: '2022-05-22' },
-        color: 'green',
-        isEditable: true,
-        id: '5602b6f589fc',
-    },
-    // ...
-]
+const date_start = ref('')
+const open_dialog_delete = ref(false)
+const date_end = ref('')
 const config = {
     locale: 'es-ES',
     showCurrentTime: true,
     defaultMode: 'month',
 }
-const createEvent = (date) => {
-    updateDate(new Date(date))
+onMounted(() => {
+    getEvents()
+})
+const editEvent = (id) => {
+    setCurrentEvent(id)
     openDialog.value = true
 }
+const confirmDelete = () => {
+    deleteCurrentEvent()
+    open_dialog_delete.value = false
+}
+const deleteEvent = (id) => {
+    setCurrentEvent(id)
+    open_dialog_delete.value = true
+}
+const closeDialog = () => {
+    openDialog.value = false
+    clearCurrentEvent()
+    getEvents()
+}
+const createEvent = (date) => {
+    const new_date = dayJs(date)
 
-const updateDate = (newDate) => {
-    pickedDate.value = newDate
+    date_start.value = new_date
+    date_end.value = new_date.add(3, 'hour')
+    updateEventDates(new_date, new_date.add(3, 'hour'))
+    openDialog.value = true
 }
-const updateHour = (hour) => {
-    const newDate = new Date(pickedDate.value)
-    newDate.setHours(hour)
-    pickedDate.value = newDate
+watch(
+    () => createEventState,
+    (newValue, oldValue) => {
+        if (newValue.status == 201) {
+            opendialog.value = false
+        }
+    }
+)
+
+const updateHour = (data) => {
+    const type = data.type
+    const hour = data.hour
+
+    if (type === 'start') {
+        const new_date = date_start.value.hour(hour)
+        date_start.value = new_date
+    } else if (type === 'end') {
+        const new_date = date_end.value.hour(hour)
+        date_end.value = new_date
+    }
 }
-const updateMinute = (minute) => {
-    const newDate = new Date(pickedDate.value)
-    newDate.setMinutes(minute)
-    pickedDate.value = newDate
+const updateMinute = (data) => {
+    const type = data.type
+    const minute = data.minute
+    if (type === 'start') {
+        const new_date = date_start.value.minute(minute)
+        date_start.value = new_date
+    } else if (type === 'end') {
+        const new_date = date_end.value.minute(minute)
+        date_end.value = new_date
+    }
 }
 </script>
 

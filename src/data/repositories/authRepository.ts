@@ -1,20 +1,21 @@
 import type { IAuthRepository } from '@domain/repositories/IAuthRepository'
 import type AuthService from '../services/AuthService'
-import type { User } from '@domain/domain/models/user'
+import type { User } from '~~/src/domain/models/User'
 
 class AuthRepository implements IAuthRepository {
     private service: AuthService
     constructor(service: AuthService) {
         this.service = service
     }
-    async getUser(): Promise<User> {
+    async getUser(): Promise<User | null> {
         return await this.service.getUser()
     }
-    async signIn(): Promise<User> {
+    async signIn(): Promise<User | null> {
         return await this.service.signIn()
     }
     async signOut(): Promise<null> {
-        return await this.service.signOut()
+        await this.service.signOut()
+        return null
     }
 }
 
