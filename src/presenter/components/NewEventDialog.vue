@@ -116,6 +116,10 @@
                                     ></v-list-item>
                                 </template>
                             </v-autocomplete>
+                            <v-checkbox
+                                v-model="currentEvent.public"
+                                label="Evento público"
+                            ></v-checkbox>
                             <v-select
                                 label="Cuantos personas"
                                 v-model="currentEvent.slots"

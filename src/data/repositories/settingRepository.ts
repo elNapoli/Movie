@@ -91,7 +91,15 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
             () => true
         )
     }
-
+    async deleteEvent(
+        id: string,
+        games: Game[]
+    ): Promise<BaseResponse<boolean>> {
+        return this.handleResponse(
+            this.service.deleteEvent(id, games),
+            () => true
+        )
+    }
     async createEvent(dataEntry: any): Promise<BaseResponse<boolean>> {
         return this.handleResponse(
             this.service.createEvent(dataEntry),
@@ -118,6 +126,7 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                         address: dto.address,
                         slots: dto.slots,
                         isEditable: true,
+                        public: dto.public,
                         with: dto.users.email,
                         description: dto.description,
                         title: `Junta de ${dto.users.email}`,

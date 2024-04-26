@@ -13,6 +13,7 @@ interface State {
     regionState: BaseResponse<Region[]>
     gameState: BaseResponse<Game[]>
     createEventState: BaseResponse<Boolean>
+    deleteEventState: BaseResponse<Boolean>
     eventState: BaseResponse<Event[]>
     currentEvent: Event
 }
@@ -28,6 +29,7 @@ const initCurrentEventState = {
     isEditable: false,
     with: null,
     slots: 1,
+    public: false,
     description: `
         <h2>
           ¡Hola a todos!,
@@ -64,6 +66,7 @@ export const useSettingStore = defineStore('settingStore', {
             createEventState: InitState<Boolean>(),
             eventState: InitState<Event[]>(),
             currentEvent: initCurrentEventState,
+            deleteEventState: InitState<Boolean>(),
         }
     },
     getters: {},
@@ -176,18 +179,27 @@ export const useSettingStore = defineStore('settingStore', {
         async getRegions(country_id: string) {
             this.regionState = await settingRepository.getRegions(country_id)
         },
+        async deleteCurrentEvent() {
+            this.deleteEventState = LoadingState()
+            this.deleteEventState = await settingRepository.deleteEvent(
+                this.currentEvent.id,
+                this.currentEvent.games
+            )
+            this.clearCurrentEvent()
+            await this.getEvents()
+        },
         async createOrUpdateEvent() {
             this.createEventState = LoadingState()
             const data: EventEntry = {
                 date_start: this.currentEvent.time.start,
                 date_end: this.currentEvent.time.end,
                 slots: this.currentEvent.slots,
+                public: this.currentEvent.public,
                 municipality_id: this.currentEvent.municipality!!.id,
                 address: this.currentEvent.address,
                 games: this.currentEvent.games,
                 description: this.currentEvent.description,
             }
-            console.log('data to update', data)
             if (this.currentEvent.id !== null) {
                 this.createEventState = await settingRepository.updateEvent(
                     data,

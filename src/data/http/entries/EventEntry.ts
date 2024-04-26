@@ -6,6 +6,7 @@ export interface EventEntry {
     slots: number
     municipality_id: number
     address: string
+    public: boolean
     games: Game[]
     description: string
 }

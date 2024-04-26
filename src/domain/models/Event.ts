@@ -11,6 +11,7 @@ export class Event {
     }
     color: string
     isEditable: boolean
+    public: boolean
     with: string | null
     description: string
     games: Game[]
@@ -29,6 +30,7 @@ export class Event {
             this.color = event.color
             this.isEditable = event.isEditable
             this.with = event.with
+            this.public = event.public
             this.description = event.description
             this.games = event.games
             this.location = event.location
@@ -45,6 +47,7 @@ export class Event {
             this.color = 'green'
             this.isEditable = false
             this.with = null
+            this.public = false
             this.description = ''
             this.games = []
             this.location = ''

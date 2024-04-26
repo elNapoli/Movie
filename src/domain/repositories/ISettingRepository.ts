@@ -17,4 +17,5 @@ export interface ISettingRepository {
     createEvent: (dataEntry: any) => Promise<BaseResponse<boolean>>
     updateEvent: (dataEntry: any, id: string) => Promise<BaseResponse<boolean>>
     getEvents: () => Promise<BaseResponse<Event[]>>
+    deleteEvent: (id: string, games: Game[]) => Promise<boolean>
 }

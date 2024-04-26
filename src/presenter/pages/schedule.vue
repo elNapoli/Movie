@@ -1,4 +1,20 @@
 <template>
+    <LoaderFullScreen :isLoading="deleteEventState.status == 1000" />
+    <v-dialog v-model="open_dialog_delete" max-width="600">
+        <v-card
+            prepend-icon="mdi-map-marker"
+            text="Si eliminas esta junta no se podrá recuperar"
+            title="¿Seguro que deseas eliminar esta junta?"
+        >
+            <template v-slot:actions>
+                <v-spacer></v-spacer>
+
+                <v-btn @click="open_dialog_delete = false"> Cancelar </v-btn>
+
+                <v-btn @click="confirmDelete"> Eliminar</v-btn>
+            </template>
+        </v-card>
+    </v-dialog>
     <NewEventDialog
         :open="openDialog"
         @updateMinute="updateMinute($event)"
@@ -9,7 +25,7 @@
         :events="eventState.data"
         :config="config"
         @edit-event="editEvent($event)"
-        @delete-event="console.log('Eliminar evengo', $event)"
+        @delete-event="deleteEvent($event)"
         @date-was-clicked="createEvent($event)"
         @datetime-was-clicked="createEvent($event)"
     />
@@ -19,11 +35,18 @@
 import { Qalendar } from 'qalendar'
 const dayJs = useDayjs()
 const settingStore = useSettingStore()
-const { getEvents, setCurrentEvent, updateEventDates, clearCurrentEvent } =
-    settingStore
-const { eventState, createEventState } = storeToRefs(settingStore)
+const {
+    getEvents,
+    setCurrentEvent,
+    updateEventDates,
+    clearCurrentEvent,
+    deleteCurrentEvent,
+} = settingStore
+const { eventState, createEventState, deleteEventState } =
+    storeToRefs(settingStore)
 const openDialog = ref(false)
 const date_start = ref('')
+const open_dialog_delete = ref(false)
 const date_end = ref('')
 const config = {
     locale: 'es-ES',
@@ -36,6 +59,14 @@ onMounted(() => {
 const editEvent = (id) => {
     setCurrentEvent(id)
     openDialog.value = true
+}
+const confirmDelete = () => {
+    deleteCurrentEvent()
+    open_dialog_delete.value = false
+}
+const deleteEvent = (id) => {
+    setCurrentEvent(id)
+    open_dialog_delete.value = true
 }
 const closeDialog = () => {
     openDialog.value = false
