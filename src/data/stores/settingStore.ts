@@ -127,7 +127,7 @@ export const useSettingStore = defineStore('settingStore', {
                 if (
                     this.currentEvent.time.start.diff(
                         this.currentEvent.time.end
-                    ) < 0
+                    ) > 0
                 ) {
                     this.currentEvent.time.start = this.currentEvent.time.end
                 }
@@ -153,7 +153,7 @@ export const useSettingStore = defineStore('settingStore', {
                 if (
                     this.currentEvent.time.start.diff(
                         this.currentEvent.time.end
-                    ) < 0
+                    ) > 0
                 ) {
                     this.currentEvent.time.start = this.currentEvent.time.end
                 }
@@ -161,7 +161,18 @@ export const useSettingStore = defineStore('settingStore', {
         },
 
         async getEvents() {
-            this.eventState = await settingRepository.getEvents()
+            this.eventState = await settingRepository.getEvents(true)
+        },
+        async draggedEvent(event: Event) {
+            const data: EventEntry = {
+                date_start: dayJs(event.time.start),
+                date_end: dayJs(event.time.end),
+                games: [],
+            }
+            this.createEventState = await settingRepository.updateEvent(
+                data,
+                event.id
+            )
         },
         setCurrentEvent(id: string) {
             const event = this.eventState.data.find((t) => t.id === id)

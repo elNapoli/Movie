@@ -16,6 +16,6 @@ export interface ISettingRepository {
     searchGames: (query: string) => Promise<BaseResponse<Game[]>>
     createEvent: (dataEntry: any) => Promise<BaseResponse<boolean>>
     updateEvent: (dataEntry: any, id: string) => Promise<BaseResponse<boolean>>
-    getEvents: () => Promise<BaseResponse<Event[]>>
+    getEvents: (byUser: boolean) => Promise<BaseResponse<Event[]>>
     deleteEvent: (id: string, games: Game[]) => Promise<boolean>
 }

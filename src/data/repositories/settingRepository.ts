@@ -106,10 +106,10 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
             () => true
         )
     }
-    async getEvents(): Promise<BaseResponse<Event[]>> {
+    async getEvents(byUser: boolean): Promise<BaseResponse<Event[]>> {
         const dayjs = useDayjs()
         return this.handleResponse(
-            this.service.getEvents(),
+            this.service.getEvents(byUser),
             (dataResponse: EventDto[]): Event[] =>
                 dataResponse.map(
                     (dto: EventDto): Event => ({
@@ -125,7 +125,7 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                         municipality: dto.municipalities,
                         address: dto.address,
                         slots: dto.slots,
-                        isEditable: true,
+                        isEditable: dto.isEditable,
                         public: dto.public,
                         with: dto.users.email,
                         description: dto.description,

@@ -28,6 +28,7 @@
         @delete-event="deleteEvent($event)"
         @date-was-clicked="createEvent($event)"
         @datetime-was-clicked="createEvent($event)"
+        @event-was-dragged="draggedEvent($event)"
     />
 </template>
 
@@ -41,6 +42,7 @@ const {
     updateEventDates,
     clearCurrentEvent,
     deleteCurrentEvent,
+    draggedEvent,
 } = settingStore
 const { eventState, createEventState, deleteEventState } =
     storeToRefs(settingStore)

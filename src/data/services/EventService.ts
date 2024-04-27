@@ -49,13 +49,25 @@ class EventService {
             .select()
             .ilike('name', `%${query}%`)
     }
-    async getEvents(): Promise<BaseResponseDto<EventDto[]>> {
-        const data = await this.client
+
+    async getEvents(byUser: boolean): Promise<BaseResponseDto<EventDto[]>> {
+        const user = await this.client.getClient().auth.getUser()
+        var promise = this.client
             .getClient()
             .from('schedules')
             .select(
                 '*, users(id, email), municipalities(id,name, regions(id, name, municipalities(id,name))), games(id, name,year_published)'
             )
+        if (byUser) {
+            promise = promise.eq('host_id', user.data.user?.id)
+        }
+
+        const data = await promise
+        const dateUpdated = data?.data?.map((s: EventDto) => ({
+            ...s,
+            isEditable: user.data.user.id === s.users.id,
+        }))
+        data.data = dateUpdated
         return data
     }
     async getGamesBeforeUpdate(schedule_id: string): Promise<number[]> {
