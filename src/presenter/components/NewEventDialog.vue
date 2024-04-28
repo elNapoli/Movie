@@ -5,7 +5,6 @@
             :modelValue="open"
             @update:value="open = $event"
             max-width="800"
-            persistent
             transition="dialog-bottom-transition"
         >
             <v-form fast-fail @submit.prevent="createOrUpdateEvent">

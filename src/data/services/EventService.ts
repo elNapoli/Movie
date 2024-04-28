@@ -58,10 +58,32 @@ class EventService {
             .select(
                 '*, users(id, email), municipalities(id,name, regions(id, name, municipalities(id,name))), games(id, name,year_published)'
             )
-        if (byUser) {
-            promise = promise.eq('host_id', user.data.user?.id)
-        }
+            .eq('host_id', user.data.user?.id)
+        const data = await promise
+        const dateUpdated = data?.data?.map((s: EventDto) => ({
+            ...s,
+            isEditable: user.data.user.id === s.users.id,
+        }))
+        data.data = dateUpdated
+        return data
+    }
 
+    async getPublicEvents(
+        date_start: string,
+        date_end: string
+    ): Promise<BaseResponseDto<EventDto[]>> {
+        const user = await this.client.getClient().auth.getUser()
+        console.log(date_start)
+        console.log(date_end)
+        var promise = this.client
+            .getClient()
+            .from('schedules')
+            .select(
+                '*, users(id, email), municipalities(id,name, regions(id, name, municipalities(id,name))), games(id, name,year_published)'
+            )
+            .eq('public', true)
+            .gte('date_start', date_start)
+            .lt('date_start', date_end)
         const data = await promise
         const dateUpdated = data?.data?.map((s: EventDto) => ({
             ...s,
@@ -132,6 +154,7 @@ class EventService {
         }
         return await this.addGames(response.data!![0].id, games)
     }
+
     async updateEvent(
         data: EventEntry,
         id: string

@@ -56,7 +56,7 @@ const config = {
     defaultMode: 'month',
 }
 onMounted(() => {
-    getEvents()
+    getEvents(true)
 })
 const editEvent = (id) => {
     setCurrentEvent(id)
@@ -73,7 +73,7 @@ const deleteEvent = (id) => {
 const closeDialog = () => {
     openDialog.value = false
     clearCurrentEvent()
-    getEvents()
+    getEvents(true)
 }
 const createEvent = (date) => {
     const new_date = dayJs(date)

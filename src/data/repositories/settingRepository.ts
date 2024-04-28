@@ -142,6 +142,45 @@ class SettingRepository extends BaseRepository implements ISettingRepository {
                 )
         )
     }
+    async getPublicEvents(
+        date_start: string,
+        date_end: string
+    ): Promise<BaseResponse<Event[]>> {
+        const dayjs = useDayjs()
+        return this.handleResponse(
+            this.service.getPublicEvents(date_start, date_end),
+            (dataResponse: EventDto[]): Event[] =>
+                dataResponse.map(
+                    (dto: EventDto): Event => ({
+                        id: dto.id,
+                        time: {
+                            start: dayjs(dto.date_start).format(
+                                'DD-MM-YYYY HH:mm'
+                            ),
+                            end: dayjs(dto.date_end).format('DD-MM-YYYY HH:mm'),
+                        },
+                        color: 'green',
+                        region: dto.municipalities.regions,
+                        municipality: dto.municipalities,
+                        address: dto.address,
+                        slots: dto.slots,
+                        isEditable: dto.isEditable,
+                        public: dto.public,
+                        with: dto.users.email,
+                        description: dto.description,
+                        title: `Junta de ${dto.users.email}`,
+                        location: `${dto.municipalities.regions!!.name} ${dto.municipalities.name} ${dto.address}`,
+                        games: dto.games.map(
+                            (game: GameDto): Game => ({
+                                id: game.id,
+                                name: game.name,
+                                year_published: game.year_published,
+                            })
+                        ),
+                    })
+                )
+        )
+    }
 }
 
 export default SettingRepository

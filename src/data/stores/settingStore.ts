@@ -6,7 +6,6 @@ import type { Game } from '~~/src/domain/models/Games'
 import type { BaseResponse } from '~~/src/domain/models/BaseResponse'
 import { InitState, LoadingState } from './BaseStore'
 import type { EventEntry } from '../http/entries/EventEntry'
-
 const dayJs = useDayjs()
 interface State {
     menuState: BaseResponse<Menu[]>
@@ -15,7 +14,10 @@ interface State {
     createEventState: BaseResponse<Boolean>
     deleteEventState: BaseResponse<Boolean>
     eventState: BaseResponse<Event[]>
+    eventDataTableState: BaseResponse<Event[]>
     currentEvent: Event
+    requestEvent: Event | null
+    requestState: BaseResponse<boolean>
 }
 
 const initCurrentEventState = {
@@ -65,8 +67,11 @@ export const useSettingStore = defineStore('settingStore', {
             gameState: InitState<Game[]>(),
             createEventState: InitState<Boolean>(),
             eventState: InitState<Event[]>(),
+            eventDataTableState: InitState<Event[]>(),
             currentEvent: initCurrentEventState,
             deleteEventState: InitState<Boolean>(),
+            requestEvent: null,
+            requestState: InitState<Boolean>(),
         }
     },
     getters: {},
@@ -160,19 +165,38 @@ export const useSettingStore = defineStore('settingStore', {
             }
         },
 
-        async getEvents() {
-            this.eventState = await settingRepository.getEvents(true)
+        async getEvents(byUser: boolean) {
+            this.eventState = await settingRepository.getEvents(byUser)
+        },
+        async getEventsDataTable(date_start, date_end) {
+            this.eventDataTableState = LoadingState()
+            this.eventDataTableState = await settingRepository.getPublicEvents(
+                date_start.format('YYYY-MM-DDTHH:mm:ssZ'),
+                date_end.format('YYYY-MM-DDTHH:mm:ssZ')
+            )
+        },
+        async sendRequestToEvent() {
+            this.requestState = LoadingState()
+            console.log('enviando')
+        },
+        async loadRequests(schedule_id: string) {
+            if (schedule_id !== undefined) {
+                this.guestState = LoadingState()
+            }
         },
         async draggedEvent(event: Event) {
             const data: EventEntry = {
                 date_start: dayJs(event.time.start),
                 date_end: dayJs(event.time.end),
-                games: [],
+                games: event.games,
             }
             this.createEventState = await settingRepository.updateEvent(
                 data,
                 event.id
             )
+        },
+        setRequestEvent(event: Event) {
+            this.requestEvent = event
         },
         setCurrentEvent(id: string) {
             const event = this.eventState.data.find((t) => t.id === id)
@@ -197,7 +221,7 @@ export const useSettingStore = defineStore('settingStore', {
                 this.currentEvent.games
             )
             this.clearCurrentEvent()
-            await this.getEvents()
+            await this.getEvents(true)
         },
         async createOrUpdateEvent() {
             this.createEventState = LoadingState()
